@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -267,6 +268,13 @@ public class FormPanel extends JPanel{
 		
 		taxField.setEnabled(false);
 		taxLabel.setEnabled(false);
+		okBtn.setMnemonic(KeyEvent.VK_ENTER);
+		nameLabel.setDisplayedMnemonic(KeyEvent.VK_N);
+		nameLabel.setLabelFor(nameField);
+		occupationLabel.setDisplayedMnemonic(KeyEvent.VK_O);
+		occupationLabel.setLabelFor(occupationField);
+		ageLabel.setDisplayedMnemonic(KeyEvent.VK_A);
+		ageLabel.setLabelFor(ageList);
 		
 	}
 	

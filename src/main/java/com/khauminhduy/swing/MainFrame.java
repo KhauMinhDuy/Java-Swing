@@ -1,27 +1,40 @@
 package com.khauminhduy.swing;
 
-import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
+import static com.khauminhduy.util.Utils.getFileExtensions;
 
-import javax.sql.rowset.serial.SQLOutputImpl;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
 
 import com.khauminhduy.consts.Const;
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private TextPanel textPanel;
 	private ToolBar toolBar;
 	private JButton button;
 	private FormPanel formPanel;
-	
+	private JFileChooser fileChooser;
+
 	public MainFrame() {
 		super("Hello World");
 		setControl();
@@ -35,9 +48,9 @@ public class MainFrame extends JFrame{
 		add(textPanel, BorderLayout.CENTER);
 		add(button, BorderLayout.SOUTH);
 		add(formPanel, BorderLayout.WEST);
-		
+
 		setJMenuBar(createMenu());
-		setSize(Const.WIDTH, Const.HEIGHT);
+		setMinimumSize(new Dimension(Const.WIDTH, Const.HEIGHT));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -51,7 +64,7 @@ public class MainFrame extends JFrame{
 		button.addActionListener(event -> {
 			textPanel.append("Click\n");
 		});
-		
+
 		formPanel.addFormEventOccured(event -> {
 			String name = event.getName();
 			String occupation = event.getOccupation();
@@ -60,10 +73,10 @@ public class MainFrame extends JFrame{
 			String taxId = event.getTaxId();
 			boolean usCitizen = event.isUsCitizen();
 			String gender = event.getGender();
-			
+
 			textPanel.append("Name : " + name + " | " + "Occupation: " + occupation + " | " + "Age: " + age + " | "
 					+ "Employment: " + employee + " | " + taxId + " | " + usCitizen + " | " + gender + "\n");
-			
+
 		});
 	}
 
@@ -72,67 +85,103 @@ public class MainFrame extends JFrame{
 		toolBar = new ToolBar();
 		button = new JButton("Click");
 		formPanel = new FormPanel();
+		fileChooser = new JFileChooser();
+		fileChooser.addChoosableFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "Person database files (*.txt)";
+			}
+			
+			@Override
+			public boolean accept(File file) {
+				String fileName = file.getName();
+				String fileExtensions = getFileExtensions(fileName);
+				System.out.println(fileName + " " + fileExtensions);
+				if(fileExtensions == null) {
+					return false;
+				}
+				if(fileExtensions.equals("txt")) {
+					return true;
+				}
+				return false;
+			}
+		});
 	}
-	
+
 	private JMenuBar createMenu() {
 		JMenuBar menu = new JMenuBar();
-		
+
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem newItem = new JMenuItem("New File");
 		JMenuItem exportDataItem = new JMenuItem("Export Data");
 		JMenuItem importDataItem = new JMenuItem("Import Data");
 		JMenuItem exitItem = new JMenuItem("Exit");
-		
+
 		fileMenu.add(newItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exportDataItem);
 		fileMenu.add(importDataItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
-		
-		
-		
+
 		JMenu windowMenu = new JMenu("Window");
 		JMenuItem newWindowItem = new JMenuItem("New Window");
 		windowMenu.add(newWindowItem);
-		
-		
+
 		JMenu showMenu = new JMenu("Show");
 		JCheckBoxMenuItem showFormCheckBox = new JCheckBoxMenuItem("Show Form");
 		showMenu.add(showFormCheckBox);
 		showFormCheckBox.setSelected(true);
 		windowMenu.add(showMenu);
-		
+
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		windowMenu.setMnemonic(KeyEvent.VK_W);
 		exitItem.setMnemonic(KeyEvent.VK_X);
-		
+		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		menu.add(fileMenu);
 		menu.add(windowMenu);
-		
+
 		newItem.addActionListener(event -> {
 			System.out.println(newItem.getText());
 		});
-		
+
 		exportDataItem.addActionListener(event -> {
-			System.out.println(exportDataItem.getText());
+
+			String inputDialog = JOptionPane.showInputDialog(this, "Enter your name", "Your Name",
+					JOptionPane.OK_OPTION | JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(inputDialog);
 		});
-		
+
 		importDataItem.addActionListener(event -> {
-			System.out.println(importDataItem.getText());
+			int openDialog = fileChooser.showOpenDialog(this);
+			if (openDialog == JFileChooser.APPROVE_OPTION) {
+				System.out.println(fileChooser.getSelectedFile());
+				try {
+					List<String> readAllLines = Files.readAllLines(Paths.get(fileChooser.getSelectedFile().getPath()));
+					readAllLines.forEach(System.out::println);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		});
-		
+
 		exitItem.addActionListener(event -> {
 			System.out.println(exitItem.getText());
-			System.exit(0);
+			int showConfirmDialog = JOptionPane.showConfirmDialog(this, "Do you want exit", "Exit",
+					JOptionPane.YES_NO_OPTION);
+			if (showConfirmDialog == JOptionPane.YES_NO_OPTION) {
+				System.exit(0);
+			}
 		});
-		
+
 		showFormCheckBox.addActionListener(event -> {
-			JCheckBoxMenuItem form =  (JCheckBoxMenuItem) event.getSource();
+			JCheckBoxMenuItem form = (JCheckBoxMenuItem) event.getSource();
 			formPanel.setVisible(form.isSelected());
 		});
-		
+
 		return menu;
 	}
-	
+
 }
