@@ -1,18 +1,14 @@
-package com.khauminhduy.swing;
-
-import static com.khauminhduy.util.Utils.getFileExtensions;
+package com.khauminhduy.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -21,9 +17,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
 
 import com.khauminhduy.consts.Const;
+import com.khauminhduy.controller.Controller;
+import com.khauminhduy.util.FileExtenstions;
 
 public class MainFrame extends JFrame {
 
@@ -31,8 +28,8 @@ public class MainFrame extends JFrame {
 
 	private TextPanel textPanel;
 	private ToolBar toolBar;
-	private JButton button;
 	private FormPanel formPanel;
+	private Controller controller;
 	private JFileChooser fileChooser;
 
 	public MainFrame() {
@@ -46,7 +43,6 @@ public class MainFrame extends JFrame {
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
 		add(textPanel, BorderLayout.CENTER);
-		add(button, BorderLayout.SOUTH);
 		add(formPanel, BorderLayout.WEST);
 
 		setJMenuBar(createMenu());
@@ -59,10 +55,6 @@ public class MainFrame extends JFrame {
 	private void setEvent() {
 		toolBar.setStringListener(text -> {
 			textPanel.append(text);
-		});
-
-		button.addActionListener(event -> {
-			textPanel.append("Click\n");
 		});
 
 		formPanel.addFormEventOccured(event -> {
@@ -83,30 +75,13 @@ public class MainFrame extends JFrame {
 	private void setControl() {
 		textPanel = new TextPanel();
 		toolBar = new ToolBar();
-		button = new JButton("Click");
 		formPanel = new FormPanel();
 		fileChooser = new JFileChooser();
-		fileChooser.addChoosableFileFilter(new FileFilter() {
-			
-			@Override
-			public String getDescription() {
-				return "Person database files (*.txt)";
-			}
-			
-			@Override
-			public boolean accept(File file) {
-				String fileName = file.getName();
-				String fileExtensions = getFileExtensions(fileName);
-				System.out.println(fileName + " " + fileExtensions);
-				if(fileExtensions == null) {
-					return false;
-				}
-				if(fileExtensions.equals("txt")) {
-					return true;
-				}
-				return false;
-			}
-		});
+		fileChooser.addChoosableFileFilter(new FileExtenstions("txt"));
+		fileChooser.addChoosableFileFilter(new FileExtenstions("pdf"));
+		
+		controller = new Controller();
+		
 	}
 
 	private JMenuBar createMenu() {

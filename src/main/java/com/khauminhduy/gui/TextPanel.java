@@ -1,4 +1,4 @@
-package com.khauminhduy.swing;
+package com.khauminhduy.gui;
 
 import java.awt.BorderLayout;
 
