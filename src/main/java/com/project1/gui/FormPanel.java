@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,9 +95,18 @@ public class FormPanel extends JPanel{
 			String outputVoucherId = outputVoucherIdField.getText();
 			String outputDate = outputDateField.getText();
 			String outputUser = outputUserField.getText();
-			String totalDiscount = totalDiscountField.getText();
-			String giftdiscount = totalGiftVoucherField.getText();
-			String moneyCard = moneyCardField.getText();
+			String totalDiscount = "";
+			String giftdiscount = "";
+			String moneyCard = "";
+			if(totalDiscountCheck.isSelected()) {
+				totalDiscount = totalDiscountField.getText();
+			}
+			if(totalGiftVoucherCheck.isSelected()) {
+				giftdiscount = totalGiftVoucherField.getText();
+			}
+			if(moneyCardCheck.isSelected()) {
+				moneyCard = moneyCardField.getText();
+			}
 			
 			Bill bill = new Bill(storeAddress, outputVoucherId, outputDate, outputUser);
 			bill.setTotalDiscount(processNumberFormat(totalDiscount));
@@ -108,8 +118,6 @@ public class FormPanel extends JPanel{
 			if(formListener != null) {
 				formListener.formPerforment(formEvent);
 			}
-			
-			
 			
 		});
 		
@@ -345,9 +353,9 @@ public class FormPanel extends JPanel{
 	
 	private List<Product> getProducts() {
 		List<Product> products = new ArrayList<>();
-		Product dualeo = new Product("Dua Leo", 10, 19216, 192157);
-		Product bia333 = new Product("BIA 333 LON 330ML THUNG 24", 10, 225784, 2257843);
-		Product migoi = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 1, 3900, 3900);
+		Product dualeo = new Product("Dua Leo", 10, 19216);
+		Product bia333 = new Product("BIA 333 LON 330ML THUNG 24", 10, 225784);
+		Product migoi = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 1, 3900);
 		
 		products.add(dualeo);
 		products.add(bia333);
@@ -355,5 +363,6 @@ public class FormPanel extends JPanel{
 		
 		return products;
 	}
+
 	
 }

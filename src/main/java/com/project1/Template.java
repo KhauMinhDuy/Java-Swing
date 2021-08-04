@@ -1,16 +1,16 @@
 package com.project1;
 
+import java.text.DecimalFormat;
+
 import com.project1.model.Bill;
 import com.project1.model.Product;
 
 public class Template {
 	
-	private static StringBuffer stringBuffer;
-
+	private static StringBuffer stringBuffer = new StringBuffer();
 	
 	public static String getTemplate(Bill bill) {
-		stringBuffer = new StringBuffer();
-		
+		stringBuffer.setLength(0);
 append("<style type=\"text/css\">");
 append("    table {");
 append("        font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif;");
@@ -73,9 +73,9 @@ append("		<tr>");
 append("     		<td colspan=\"3\">"); append(product.getProductName()); append("</td>");
 append("		</tr>");
 append("        <tr>");
-append("            <td class=\"text-center\" style=\"padding:5px 0px\">"); append(String.valueOf(product.getQuantity()));  append("</td>");
-append("            <td class=\"text-center\" style=\"padding:5px 0px\">"); append(String.valueOf(product.getSalePriceVAT())); append("</td>");
-append("            <td class=\"text-right\" style=\"padding:5px 0px\">"); append(String.valueOf(product.getTotalAmountVAT())); append("</td>");
+append("            <td class=\"text-center\" style=\"padding:5px 0px\">"); append(formatNumber(product.getQuantity()));  append("</td>");
+append("            <td class=\"text-center\" style=\"padding:5px 0px\">"); append(formatNumber(product.getSalePriceVAT())); append("</td>");
+append("            <td class=\"text-right\" style=\"padding:5px 0px\">"); append(formatNumber(product.getTotalAmountVAT())); append("</td>");
 append("        </tr>");
 	}			
 } else {
@@ -95,27 +95,31 @@ append("    </tr>");
 
 append("    <tr>");
 append("        <td class=\"text-right\" colspan=\"2\">Tổng tiền:</td>");
-append("        <td class=\"text-right\">"); append(String.valueOf(bill.getTotalAmount())); append("</td>");
+append("        <td class=\"text-right\">"); append(formatNumber(bill.getTotalAmount())); append("</td>");
 append("    </tr>");
 
+if(bill.getTotalDiscount() != 0) {
 append("    <tr>");
 append("            <td class=\"text-right\" colspan=\"2\">Đã giảm:</td>");
-append("            <td class=\"text-right\">"); append(String.valueOf(bill.getTotalDiscount())); append("</td>");
+append("            <td class=\"text-right\">"); append(formatNumber(bill.getTotalDiscount())); append("</td>");
 append("    </tr>");
-
+}
+if(bill.getTotalGiftVoucherAmount() != 0) {
 append("    <tr>");
 append("            <td class=\"text-right\" colspan=\"2\">Phiếu mua hàng:</td>");
-append("            <td class=\"text-right\">"); append(String.valueOf(bill.getTotalGiftVoucherAmount())); append("</td>");
+append("            <td class=\"text-right\">"); append(formatNumber(bill.getTotalGiftVoucherAmount())); append("</td>");
 append("    </tr>");
-
+}
+if(bill.getMoneyCard() != 0) {
 append("    <tr>");
 append("            <td class=\"text-right\" colspan=\"2\">Tiền cà thẻ:</td>");
-append("            <td class=\"text-right\">"); append(String.valueOf(bill.getMoneyCard())); append("</td>");
+append("            <td class=\"text-right\">"); append(formatNumber(bill.getMoneyCard())); append("</td>");
 append("    </tr>");
+}
 
 append("    <tr>");
 append("        <td class=\"text-right\" colspan=\"2\"><strong style=\"font-size:18px\">Thanh toán:</strong><br /><i>(Đã làm tròn)</i></td>");
-append("        <td class=\"text-right\" style=\"font-size: 20px;\"><strong>1,303,500</strong></td>");
+append("        <td class=\"text-right\" style=\"font-size: 20px;\"><strong>");  append(formatNumber(bill.getTotalAmountRound())); append("</strong></td>");
 append("    </tr>");
 
 append("    <tr>");
@@ -156,6 +160,12 @@ append("</table>");
 	
 	private static void append(String text) {
 		stringBuffer.append(text);
+	}
+	
+	
+	public static String formatNumber(int value) {
+	    DecimalFormat df = new DecimalFormat("###,###,###");
+	    return df.format(value);
 	}
 	
 }

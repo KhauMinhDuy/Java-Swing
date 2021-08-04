@@ -10,11 +10,10 @@ public class Product {
 	public Product() {
 	}
 
-	public Product(String productName, Integer quantity, Integer salePriceVAT, Integer totalAmountVAT) {
+	public Product(String productName, Integer quantity, Integer salePriceVAT) {
 		this.productName = productName;
 		this.quantity = quantity;
 		this.salePriceVAT = salePriceVAT;
-		this.totalAmountVAT = totalAmountVAT;
 	}
 
 	public String getProductName() {
@@ -42,11 +41,7 @@ public class Product {
 	}
 
 	public Integer getTotalAmountVAT() {
-		return totalAmountVAT;
-	}
-
-	public void setTotalAmountVAT(Integer totalAmountVAT) {
-		this.totalAmountVAT = totalAmountVAT;
+		return quantity * salePriceVAT;
 	}
 
 }

@@ -67,20 +67,21 @@ public class RootFrame extends JFrame{
 				bill.setProducts(products);
 				bill.setQrCode("src/main/resources/qr_code.jpg");
 				bill.setBarcode("src/main/resources/barcode.png");
-				bill.setSpecialMessage(
-						"Tổng đài góp ý/khiếu nại:1800 1067.\n" 
-						+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
-						+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
-						+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
-						+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
-						+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.");
-				System.out.println(bill.getSpecialMessage());
+				System.out.println(bill.getTotalAmount());
+				System.out.println(bill.getTotalDiscount());
+				System.out.println(bill.getTotalGiftVoucherAmount());
+				System.out.println(bill.getMoneyCard());
+				System.out.println(bill.getTotalAmountRound());
+				
+				
 				html = Template.getTemplate(bill);
 				try {
 					writeTemplate("src\\main\\java\\com\\project1\\template.html", html);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+				
 				Document doc = jEditorPane.getDocument();
 				doc.putProperty(Document.StreamDescriptionProperty, null);
 				
@@ -98,13 +99,6 @@ public class RootFrame extends JFrame{
 
 		jEditorPane.setContentType("text/html");
 		Bill bill = new Bill();
-		bill.setSpecialMessage(
-				"Tổng đài góp ý/khiếu nại:1800 1067.\n" 
-				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
-				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
-				+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
-				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
-				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.");
 		jEditorPane.setText(Template.getTemplate(bill));
 		
 		displayPanel.add(new JScrollPane(jEditorPane));

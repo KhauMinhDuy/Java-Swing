@@ -10,11 +10,11 @@ public class Bill {
 	private String outputVoucherID;
 	private String outputDATE;
 	private String outputUSER;
-	private Integer totalAmount;
-	private Integer totalDiscount;
-	private Integer totalGiftVoucherAmount;
-	private Integer moneyCard;
-	private Integer totalAmountRound;
+	private int totalAmount;
+	private int totalDiscount ;
+	private int totalGiftVoucherAmount;
+	private int moneyCard;
+	private int totalAmountRound;
 	private String barcode;
 	private String qrCode;
 	private String specialMessage;
@@ -24,6 +24,12 @@ public class Bill {
 	public Bill() {
 		this.companyName = "BÁCH HÓA XANH";
 		this.website = "www.bachhoaxanh.com";
+		this.specialMessage = "Tổng đài góp ý/khiếu nại:1800 1067.\n" 
+				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
+				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
+				+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
+				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
+				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.";
 	}
 
 	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER) {
@@ -90,43 +96,46 @@ public class Bill {
 		this.products = products;
 	}
 
-	public Integer getTotalAmount() {
-		return totalAmount;
+	public int getTotalAmount() {
+		if (products != null) {
+			return products.stream().mapToInt(Product::getTotalAmountVAT).sum();
+		}
+		return 0;
 	}
 
-	public void setTotalAmount(Integer totalAmount) {
+	public void setTotalAmount(int totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
-	public Integer getTotalDiscount() {
+	public int getTotalDiscount() {
 		return totalDiscount;
 	}
 
-	public void setTotalDiscount(Integer totalDiscount) {
+	public void setTotalDiscount(int totalDiscount) {
 		this.totalDiscount = totalDiscount;
 	}
 
-	public Integer getTotalGiftVoucherAmount() {
+	public int getTotalGiftVoucherAmount() {
 		return totalGiftVoucherAmount;
 	}
 
-	public void setTotalGiftVoucherAmount(Integer totalGiftVoucherAmount) {
+	public void setTotalGiftVoucherAmount(int totalGiftVoucherAmount) {
 		this.totalGiftVoucherAmount = totalGiftVoucherAmount;
 	}
 
-	public Integer getMoneyCard() {
+	public int getMoneyCard() {
 		return moneyCard;
 	}
 
-	public void setMoneyCard(Integer moneyCard) {
+	public void setMoneyCard(int moneyCard) {
 		this.moneyCard = moneyCard;
 	}
 
-	public Integer getTotalAmountRound() {
-		return totalAmountRound;
+	public int getTotalAmountRound() {
+		return getTotalAmount() - (totalDiscount + totalGiftVoucherAmount + moneyCard);
 	}
 
-	public void setTotalAmountRound(Integer totalAmountRound) {
+	public void setTotalAmountRound(int totalAmountRound) {
 		this.totalAmountRound = totalAmountRound;
 	}
 
