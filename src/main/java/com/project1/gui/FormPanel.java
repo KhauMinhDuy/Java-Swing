@@ -91,8 +91,12 @@ public class FormPanel extends JPanel{
 			String soCT = soCTField.getText();
 			String dateTime = dateTimeField.getText();
 			String emp = empField.getText();
+			boolean giamGiaSelected = giamGiaCheck.isSelected();
+			boolean phieuMHSelected = phieuMHCheck.isSelected();
+			boolean tienTheSelected = tienTheCheck.isSelected();
 			
-			Bill bill = new Bill(address, soCT, dateTime, emp);
+			Bill bill = new Bill(address, soCT, dateTime, emp, 
+					giamGiaSelected, phieuMHSelected, tienTheSelected);
 			FormEvent formEvent = new FormEvent(this, bill);
 			
 			if(formListener != null) {
@@ -103,8 +107,8 @@ public class FormPanel extends JPanel{
 		
 		inBtn.addActionListener(event -> {
 			try {
-				HtmlToPdf.convert("src\\main\\java\\com\\project1\\temp.html",
-						"src\\main\\resources\\test.pdf");
+				HtmlToPdf.convert("src\\main\\java\\com\\project1\\template.html",
+						"src\\main\\resources\\bill.pdf");
 				JOptionPane.showMessageDialog(this, "In Hoa Don Thanh Cong (src\\main\\resources\\test.pdf)");
 			} catch (DocumentException | IOException e) {
 				e.printStackTrace();
@@ -133,7 +137,7 @@ public class FormPanel extends JPanel{
 		addressField.setText("193-195 Dương Văn Dương, P.Tân Quý, Q.Tân Bình, Tp.HCM");
 		soCTField.setText("2108001160001439");
 		dateTimeField.setText("01/08/2021 13:13");
-		empField.setText("Lương Hoàng Vinh");
+		empField.setText("Khấu Minh Duy");
 		
 		giamGiaField.setEnabled(false);
 		phieuMHField.setEnabled(false);

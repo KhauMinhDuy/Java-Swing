@@ -58,24 +58,17 @@ public class MainFrame extends JFrame {
 		});
 
 		formPanel.addFormEventOccured(event -> {
-			String name = event.getName();
-			String occupation = event.getOccupation();
-			String age = event.getAge();
-			String employee = event.getEmployee();
-			String taxId = event.getTaxId();
-			boolean usCitizen = event.isUsCitizen();
-			String gender = event.getGender();
-
-			textPanel.append("Name : " + name + " | " + "Occupation: " + occupation + " | " + "Age: " + age + " | "
-					+ "Employment: " + employee + " | " + taxId + " | " + usCitizen + " | " + gender + "\n");
-
+			controller.addPerson(event);
 		});
 	}
 
 	private void setControl() {
 		textPanel = new TextPanel();
+		
 		toolBar = new ToolBar();
+		
 		formPanel = new FormPanel();
+		
 		fileChooser = new JFileChooser();
 		fileChooser.addChoosableFileFilter(new FileExtenstions("txt"));
 		fileChooser.addChoosableFileFilter(new FileExtenstions("pdf"));

@@ -7,7 +7,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
@@ -18,7 +17,7 @@ import javax.swing.text.Document;
 
 import com.itextpdf.text.DocumentException;
 import com.project1.App;
-import com.project1.util.Utils;
+import com.project1.Template;
 
 public class RootFrame extends JFrame{
 
@@ -28,12 +27,14 @@ public class RootFrame extends JFrame{
 	private JEditorPane jEditorPane;
 	private FormPanel formPanel;
 	
+	private String html;
 	
 	public RootFrame() throws DocumentException, IOException {
-		
+		super("Bill");
 		setControl();
 		setEvent();
 		setProperties();
+		
 	}
 
 	private void setControl() throws DocumentException, IOException {
@@ -44,42 +45,46 @@ public class RootFrame extends JFrame{
 		jEditorPane = new JEditorPane();
 		formPanel = new FormPanel();
 		
+		html = Template.getTemplate("Điah Chỉ", "Số CT", " Ngày CT", "Nhân Viên", false, false, false);
+		
 	}
 	
 
 	private void setEvent() throws IOException{
 		formPanel.addFormPerforment(event -> {
-			try {
+		
 				String path = "src\\main\\java\\com\\project1\\template.html";
 				
 				String address = event.getAddress();
 				String soCT = event.getSoCT();
 				String dateTime = event.getDateTime();
 				String employee = event.getEmployee();
+				boolean giamGia = event.getGiamGia();
+				boolean phieuMH = event.getPhieuMH();
+				boolean tienThe = event.getTienThe();
+				html = Template.getTemplate(address, soCT, dateTime, employee, 
+						giamGia, phieuMH, tienThe);
 				
-				String html = readFiletemplate(path);
+//				String html = readFiletemplate(path);
 				
-				String replaceAddress = Utils.replaceParams(html, "diachi", address);
-				String replaceSoCT = Utils.replaceParams(replaceAddress, "soCT", soCT);
-				String replaceDateTime = Utils.replaceParams(replaceSoCT, "ngayCT", dateTime);
-				String replaceEmp = Utils.replaceParams(replaceDateTime, "nhanvien", employee);
-				
-				writeTemplate("src\\main\\java\\com\\project1\\temp.html", replaceEmp);
-				
-				TimeUnit.SECONDS.sleep(3);
+//				String replaceAddress = Utils.replaceParams(html, "diachi", address);
+//				String replaceSoCT = Utils.replaceParams(replaceAddress, "soCT", soCT);
+//				String replaceDateTime = Utils.replaceParams(replaceSoCT, "ngayCT", dateTime);
+//				String replaceEmp = Utils.replaceParams(replaceDateTime, "nhanvien", employee);
+//				
+				try {
+					writeTemplate("src\\main\\java\\com\\project1\\template.html", html);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+//				
+//				TimeUnit.SECONDS.sleep(3);
 				
 				Document doc = jEditorPane.getDocument();
 				doc.putProperty(Document.StreamDescriptionProperty, null);
 				
-				URL url = App.class.getResource("temp.html");
-				jEditorPane.setPage(url);
-				
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+				jEditorPane.setContentType("text/html");
+				jEditorPane.setText(html);
 		});
 	}
 
@@ -90,12 +95,9 @@ public class RootFrame extends JFrame{
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		jEditorPane.setEditable(false);
 		URL url = App.class.getResource("template.html");
-		try {
-			jEditorPane.setPage(url);
-		} catch (IOException e) {
-			jEditorPane.setContentType("text/html");
-			jEditorPane.setText("<html>Page not found.</html>");
-		}
+		//			jEditorPane.setPage(url);
+		jEditorPane.setContentType("text/html");
+		jEditorPane.setText(html);
 		
 		displayPanel.add(new JScrollPane(jEditorPane));
 		

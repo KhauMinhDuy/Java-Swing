@@ -31,5 +31,16 @@ public class FormEvent extends EventObject {
 	public String getEmployee() {
 		return bill.getNhanVien();
 	}
+	
+	public boolean getGiamGia() {
+		return bill.isGiamGia();
+	}
+	
+	public boolean getPhieuMH() {
+		return bill.isPhieuMH();
+	}
 
+	public boolean getTienThe() {
+		return bill.isTienThe();
+	}
 }

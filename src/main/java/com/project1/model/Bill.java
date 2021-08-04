@@ -6,6 +6,9 @@ public class Bill {
 	private String soCT;
 	private String dateTime;
 	private String nhanVien;
+	private boolean giamGia;
+	private boolean phieuMH;
+	private boolean tienThe;
 
 	private Product product;
 
@@ -13,12 +16,15 @@ public class Bill {
 		super();
 	}
 
-	public Bill(String address, String soCT, String dateTime, String nhanVien) {
+	public Bill(String address, String soCT, String dateTime, String nhanVien, boolean giamGia, boolean phieuMH, boolean tienThe) {
 		super();
 		this.address = address;
 		this.soCT = soCT;
 		this.dateTime = dateTime;
 		this.nhanVien = nhanVien;
+		this.giamGia = giamGia;
+		this.phieuMH = phieuMH;
+		this.tienThe = tienThe;
 	}
 
 	public Bill(String address, String soCT, String dateTime, String nhanVien, Product product) {
@@ -77,5 +83,31 @@ public class Bill {
 	public void setNhanVien(String nhanVien) {
 		this.nhanVien = nhanVien;
 	}
+
+	public boolean isGiamGia() {
+		return giamGia;
+	}
+
+	public void setGiamGia(boolean giamGia) {
+		this.giamGia = giamGia;
+	}
+
+	public boolean isPhieuMH() {
+		return phieuMH;
+	}
+
+	public void setPhieuMH(boolean phieuMH) {
+		this.phieuMH = phieuMH;
+	}
+
+	public boolean isTienThe() {
+		return tienThe;
+	}
+
+	public void setTienThe(boolean tienThe) {
+		this.tienThe = tienThe;
+	}
+	
+	
 
 }
