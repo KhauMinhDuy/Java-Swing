@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,6 +22,7 @@ import com.itextpdf.text.DocumentException;
 import com.project1.event.FormEvent;
 import com.project1.event.FormListener;
 import com.project1.model.Bill;
+import com.project1.model.Product;
 import com.project1.util.HtmlToPdf;
 
 
@@ -27,28 +30,28 @@ public class FormPanel extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	private JLabel addressLabel;
-	private JLabel soCTLabel;
-	private JLabel dateTimeLabel;
-	private JLabel empLabel;
-	private JLabel giamGia;
-	private JLabel phieuMuaHang;
-	private JLabel tienThe;
+	private JLabel storeAddressLabel;
+	private JLabel outputVoucherIdLabel;
+	private JLabel outputDateLabel;
+	private JLabel outputUserLabel;
+	private JLabel totalDiscountLabel;
+	private JLabel totalGiftVoucherLabel;
+	private JLabel moneyCardLabel;
 	
-	private JTextArea addressField;
-	private JTextField soCTField;
-	private JTextField dateTimeField;
-	private JTextField empField;
-	private JTextField giamGiaField;
-	private JTextField phieuMHField;
-	private JTextField tienTheField;
+	private JTextArea storeAddressField;
+	private JTextField outputVoucherIdField;
+	private JTextField outputDateField;
+	private JTextField outputUserField;
+	private JTextField totalDiscountField;
+	private JTextField totalGiftVoucherField;
+	private JTextField moneyCardField;
 	
 	private JButton luuBtn;
 	private JButton inBtn;
 	
-	private JCheckBox giamGiaCheck;
-	private JCheckBox phieuMHCheck;
-	private JCheckBox tienTheCheck;
+	private JCheckBox totalDiscountCheck;
+	private JCheckBox totalGiftVoucherCheck;
+	private JCheckBox moneyCardCheck;
 	
 	private FormListener formListener;
 	
@@ -59,49 +62,54 @@ public class FormPanel extends JPanel{
 	}
 	
 	private void setControl() {
-		addressLabel = new JLabel("Địa Chỉ: ");
-		soCTLabel = new JLabel("Số CT: ");
-		dateTimeLabel = new JLabel("Ngày CT: ");
-		empLabel = new JLabel("Nhân Viên: ");
-		giamGia = new JLabel("Đã Giảm: ");
-		phieuMuaHang = new JLabel("Phiếu Mua Hàng: ");
-		tienThe = new JLabel("Tiền Cà Thẻ: ");
+		storeAddressLabel = new JLabel("Địa Chỉ: ");
+		outputVoucherIdLabel = new JLabel("Số CT: ");
+		outputDateLabel = new JLabel("Ngày CT: ");
+		outputUserLabel = new JLabel("Nhân Viên: ");
+		totalDiscountLabel = new JLabel("Đã Giảm: ");
+		totalGiftVoucherLabel = new JLabel("Phiếu Mua Hàng: ");
+		moneyCardLabel = new JLabel("Tiền Cà Thẻ: ");
 		
-		addressField = new JTextArea(3, 20);
-		soCTField = new JTextField(20);
-		dateTimeField = new JTextField(20);
-		empField = new JTextField(20);
-		giamGiaField = new JTextField(20);
-		phieuMHField = new JTextField(20);
-		tienTheField = new JTextField(20);
+		storeAddressField = new JTextArea(3, 20);
+		outputVoucherIdField = new JTextField(20);
+		outputDateField = new JTextField(20);
+		outputUserField = new JTextField(20);
+		totalDiscountField = new JTextField(20);
+		totalGiftVoucherField = new JTextField(20);
+		moneyCardField = new JTextField(20);
 		
 		luuBtn = new JButton("Luu");
 		inBtn = new JButton("IN");
 		
-		giamGiaCheck = new JCheckBox();
-		phieuMHCheck = new JCheckBox();
-		tienTheCheck = new JCheckBox();
+		totalDiscountCheck = new JCheckBox();
+		totalGiftVoucherCheck = new JCheckBox();
+		moneyCardCheck = new JCheckBox();
 		
 	}
 
 	private void setEvent() {
 		luuBtn.addActionListener(event -> {
 			
-			String address = addressField.getText();
-			String soCT = soCTField.getText();
-			String dateTime = dateTimeField.getText();
-			String emp = empField.getText();
-			boolean giamGiaSelected = giamGiaCheck.isSelected();
-			boolean phieuMHSelected = phieuMHCheck.isSelected();
-			boolean tienTheSelected = tienTheCheck.isSelected();
+			String storeAddress = storeAddressField.getText();
+			String outputVoucherId = outputVoucherIdField.getText();
+			String outputDate = outputDateField.getText();
+			String outputUser = outputUserField.getText();
+			String totalDiscount = totalDiscountField.getText();
+			String giftdiscount = totalGiftVoucherField.getText();
+			String moneyCard = moneyCardField.getText();
 			
-			Bill bill = new Bill(address, soCT, dateTime, emp, 
-					giamGiaSelected, phieuMHSelected, tienTheSelected);
+			Bill bill = new Bill(storeAddress, outputVoucherId, outputDate, outputUser);
+			bill.setTotalDiscount(processNumberFormat(totalDiscount));
+			bill.setTotalGiftVoucherAmount(processNumberFormat(giftdiscount));
+			bill.setMoneyCard(processNumberFormat(moneyCard));
+			bill.setProducts(getProducts());
+			
 			FormEvent formEvent = new FormEvent(this, bill);
-			
 			if(formListener != null) {
 				formListener.formPerforment(formEvent);
 			}
+			
+			
 			
 		});
 		
@@ -115,40 +123,40 @@ public class FormPanel extends JPanel{
 			}
 		});
 		
-		giamGiaCheck.addActionListener(event -> {
-			boolean selected = giamGiaCheck.isSelected();
-			giamGiaField.setEnabled(selected);
+		totalDiscountCheck.addActionListener(event -> {
+			boolean selected = totalDiscountCheck.isSelected();
+			totalDiscountField.setEnabled(selected);
 		});
 		
-		phieuMHCheck.addActionListener(event -> {
-			boolean selected = phieuMHCheck.isSelected();
-			phieuMHField.setEnabled(selected);
+		totalGiftVoucherCheck.addActionListener(event -> {
+			boolean selected = totalGiftVoucherCheck.isSelected();
+			totalGiftVoucherField.setEnabled(selected);
 		});
 		
-		tienTheCheck.addActionListener(event -> {
-			boolean selected = tienTheCheck.isSelected();
-			tienTheField.setEnabled(selected);
+		moneyCardCheck.addActionListener(event -> {
+			boolean selected = moneyCardCheck.isSelected();
+			moneyCardField.setEnabled(selected);
 		});
 		
 	}
 
 	private void setProperties() {
 		
-		addressField.setText("193-195 Dương Văn Dương, P.Tân Quý, Q.Tân Bình, Tp.HCM");
-		soCTField.setText("2108001160001439");
-		dateTimeField.setText("01/08/2021 13:13");
-		empField.setText("Khấu Minh Duy");
+		storeAddressField.setText("193-195 Dương Văn Dương, P.Tân Quý, Q.Tân Bình, Tp.HCM");
+		outputVoucherIdField.setText("2108001160001439");
+		outputDateField.setText("01/08/2021 13:13");
+		outputUserField.setText("Khấu Minh Duy");
 		
-		giamGiaField.setEnabled(false);
-		phieuMHField.setEnabled(false);
-		tienTheField.setEnabled(false);
+		totalDiscountField.setEnabled(false);
+		totalGiftVoucherField.setEnabled(false);
+		moneyCardField.setEnabled(false);
 		
 		Dimension dimension = getPreferredSize();
 		dimension.width = 500;
 		setPreferredSize(dimension);
 		
-		addressField.setWrapStyleWord(true);
-		addressField.setLineWrap(true);
+		storeAddressField.setWrapStyleWord(true);
+		storeAddressField.setLineWrap(true);
 		
 		Border innerBorder = BorderFactory.createTitledBorder("Infomation");
 		Border outnerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -165,14 +173,14 @@ public class FormPanel extends JPanel{
 		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(addressLabel, gc);
+		add(storeAddressLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(addressField, gc);
+		add(storeAddressField, gc);
 		
 		// Row 2
 		
@@ -183,14 +191,14 @@ public class FormPanel extends JPanel{
 		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(soCTLabel, gc);
+		add(outputVoucherIdLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(soCTField, gc);
+		add(outputVoucherIdField, gc);
 		
 		// Row 3
 		
@@ -199,16 +207,16 @@ public class FormPanel extends JPanel{
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
+		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(dateTimeLabel, gc);
+		add(outputDateLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(dateTimeField, gc);
+		add(outputDateField, gc);
 		
 		// Row 4
 		
@@ -217,16 +225,16 @@ public class FormPanel extends JPanel{
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
+		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(empLabel, gc);
+		add(outputUserLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(empField, gc);
+		add(outputUserField, gc);
 		
 		// Row 5
 		
@@ -235,23 +243,23 @@ public class FormPanel extends JPanel{
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 80, 0, 0);
-		add(giamGia, gc);
+		add(totalDiscountLabel, gc);
 		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
+		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(giamGiaCheck, gc);
+		add(totalDiscountCheck, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(giamGiaField, gc);
+		add(totalDiscountField, gc);
 		
 		// Row 6
 		
@@ -260,23 +268,23 @@ public class FormPanel extends JPanel{
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 80, 0, 0);
-		add(phieuMuaHang, gc);
+		add(totalGiftVoucherLabel, gc);
 		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
+		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(phieuMHCheck, gc);
+		add(totalGiftVoucherCheck, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(phieuMHField, gc);
+		add(totalGiftVoucherField, gc);
 		
 		// Row 7
 		
@@ -285,23 +293,23 @@ public class FormPanel extends JPanel{
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 80, 0, 0);
-		add(tienThe, gc);
+		add(moneyCardLabel, gc);
 		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
+		gc.anchor = GridBagConstraints.LINE_END;
 		gc.insets = new Insets(0, 0, 0, 5);
-		add(tienTheCheck, gc);
+		add(moneyCardCheck, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
-		add(tienTheField, gc);
+		add(moneyCardField, gc);
 		
 		// Row 8
 		
@@ -325,6 +333,27 @@ public class FormPanel extends JPanel{
 
 	public void addFormPerforment(FormListener formListener) {
 		this.formListener = formListener;
+	}
+	
+	private Integer processNumberFormat(String input) {
+		try {
+			return Integer.parseInt(input);
+		} catch(NumberFormatException e) {
+			return 0;
+		}
+	}
+	
+	private List<Product> getProducts() {
+		List<Product> products = new ArrayList<>();
+		Product dualeo = new Product("Dua Leo", 10, 19216, 192157);
+		Product bia333 = new Product("BIA 333 LON 330ML THUNG 24", 10, 225784, 2257843);
+		Product migoi = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 1, 3900, 3900);
+		
+		products.add(dualeo);
+		products.add(bia333);
+		products.add(migoi);
+		
+		return products;
 	}
 	
 }

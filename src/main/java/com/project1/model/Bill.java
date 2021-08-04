@@ -1,113 +1,157 @@
 package com.project1.model;
 
+import java.util.List;
+
 public class Bill {
 
-	private String address;
-	private String soCT;
-	private String dateTime;
-	private String nhanVien;
-	private boolean giamGia;
-	private boolean phieuMH;
-	private boolean tienThe;
+	private String companyName;
+	private String website;
+	private String storeAddress;
+	private String outputVoucherID;
+	private String outputDATE;
+	private String outputUSER;
+	private Integer totalAmount;
+	private Integer totalDiscount;
+	private Integer totalGiftVoucherAmount;
+	private Integer moneyCard;
+	private Integer totalAmountRound;
+	private String barcode;
+	private String qrCode;
+	private String specialMessage;
 
-	private Product product;
+	private List<Product> products;
 
 	public Bill() {
-		super();
+		this.companyName = "BÁCH HÓA XANH";
+		this.website = "www.bachhoaxanh.com";
 	}
 
-	public Bill(String address, String soCT, String dateTime, String nhanVien, boolean giamGia, boolean phieuMH, boolean tienThe) {
-		super();
-		this.address = address;
-		this.soCT = soCT;
-		this.dateTime = dateTime;
-		this.nhanVien = nhanVien;
-		this.giamGia = giamGia;
-		this.phieuMH = phieuMH;
-		this.tienThe = tienThe;
+	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER) {
+		this();
+		this.storeAddress = storeAddress;
+		this.outputVoucherID = outputVoucherID;
+		this.outputDATE = outputDATE;
+		this.outputUSER = outputUSER;
 	}
 
-	public Bill(String address, String soCT, String dateTime, String nhanVien, Product product) {
-		super();
-		this.address = address;
-		this.soCT = soCT;
-		this.dateTime = dateTime;
-		this.nhanVien = nhanVien;
-		this.product = product;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public String getDiaChi() {
-		return address;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
-	public void setDiaChi(String address) {
-		this.address = address;
+	public String getWebsite() {
+		return website;
 	}
 
-	public Product getProduct() {
-		return product;
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public String getStoreAddress() {
+		return storeAddress;
 	}
 
-	public String getAddress() {
-		return address;
+	public void setStoreAddress(String storeAddress) {
+		this.storeAddress = storeAddress;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public String getOutputVoucherID() {
+		return outputVoucherID;
 	}
 
-	public String getSoCT() {
-		return soCT;
+	public void setOutputVoucherID(String outputVoucherID) {
+		this.outputVoucherID = outputVoucherID;
 	}
 
-	public void setSoCT(String soCT) {
-		this.soCT = soCT;
+	public String getOutputDATE() {
+		return outputDATE;
 	}
 
-	public String getDateTime() {
-		return dateTime;
+	public void setOutputDATE(String outputDATE) {
+		this.outputDATE = outputDATE;
 	}
 
-	public void setDateTime(String dateTime) {
-		this.dateTime = dateTime;
+	public String getOutputUSER() {
+		return outputUSER;
 	}
 
-	public String getNhanVien() {
-		return nhanVien;
+	public void setOutputUSER(String outputUSER) {
+		this.outputUSER = outputUSER;
 	}
 
-	public void setNhanVien(String nhanVien) {
-		this.nhanVien = nhanVien;
+	public List<Product> getProducts() {
+		return products;
 	}
 
-	public boolean isGiamGia() {
-		return giamGia;
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
 
-	public void setGiamGia(boolean giamGia) {
-		this.giamGia = giamGia;
+	public Integer getTotalAmount() {
+		return totalAmount;
 	}
 
-	public boolean isPhieuMH() {
-		return phieuMH;
+	public void setTotalAmount(Integer totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
-	public void setPhieuMH(boolean phieuMH) {
-		this.phieuMH = phieuMH;
+	public Integer getTotalDiscount() {
+		return totalDiscount;
 	}
 
-	public boolean isTienThe() {
-		return tienThe;
+	public void setTotalDiscount(Integer totalDiscount) {
+		this.totalDiscount = totalDiscount;
 	}
 
-	public void setTienThe(boolean tienThe) {
-		this.tienThe = tienThe;
+	public Integer getTotalGiftVoucherAmount() {
+		return totalGiftVoucherAmount;
 	}
-	
-	
+
+	public void setTotalGiftVoucherAmount(Integer totalGiftVoucherAmount) {
+		this.totalGiftVoucherAmount = totalGiftVoucherAmount;
+	}
+
+	public Integer getMoneyCard() {
+		return moneyCard;
+	}
+
+	public void setMoneyCard(Integer moneyCard) {
+		this.moneyCard = moneyCard;
+	}
+
+	public Integer getTotalAmountRound() {
+		return totalAmountRound;
+	}
+
+	public void setTotalAmountRound(Integer totalAmountRound) {
+		this.totalAmountRound = totalAmountRound;
+	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+
+	public String getQrCode() {
+		return qrCode;
+	}
+
+	public void setQrCode(String qrCode) {
+		this.qrCode = qrCode;
+	}
+
+	public String getSpecialMessage() {
+		return specialMessage;
+	}
+
+	public void setSpecialMessage(String specialMessage) {
+		this.specialMessage = specialMessage;
+	}
 
 }

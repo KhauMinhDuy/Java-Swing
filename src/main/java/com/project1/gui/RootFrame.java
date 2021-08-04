@@ -16,6 +16,8 @@ import javax.swing.text.Document;
 
 import com.itextpdf.text.DocumentException;
 import com.project1.Template;
+import com.project1.model.Bill;
+import com.project1.model.Product;
 
 public class RootFrame extends JFrame{
 
@@ -32,33 +34,48 @@ public class RootFrame extends JFrame{
 		setControl();
 		setEvent();
 		setProperties();
-		
 	}
 
 	private void setControl() throws DocumentException, IOException {
-		
 		setLayout(new BorderLayout());
 		
 		displayPanel = new JPanel();
 		jEditorPane = new JEditorPane();
 		formPanel = new FormPanel();
 		
-		html = Template.getTemplate("Điah Chỉ", "Số CT", " Ngày CT", "Nhân Viên", false, false, false);
 		
 	}
 	
 
-	private void setEvent() throws IOException{
+	private void setEvent(){
 		formPanel.addFormPerforment(event -> {
-				String address = event.getAddress();
-				String soCT = event.getSoCT();
-				String dateTime = event.getDateTime();
-				String employee = event.getEmployee();
-				boolean giamGia = event.getGiamGia();
-				boolean phieuMH = event.getPhieuMH();
-				boolean tienThe = event.getTienThe();
-				html = Template.getTemplate(address, soCT, dateTime, employee, 
-						giamGia, phieuMH, tienThe);
+				String address = event.getStoreAddress();
+				String soCT = event.getOutputVoucherID();
+				String dateTime = event.getOutputDATE();
+				String employee = event.getOutputUSER();
+				Integer totalDiscount = event.getTotalDiscount();
+				Integer totalGiftVoucherAmount = event.getTotalGiftVoucherAmount();
+				Integer moneyCard = event.getMoneyCard();
+				List<Product> products = event.getProducts();
+				
+				
+				Bill bill = new Bill(address, soCT, dateTime, employee);
+				bill.setTotalAmount(1000);
+				bill.setTotalDiscount(totalDiscount);
+				bill.setTotalGiftVoucherAmount(totalGiftVoucherAmount);
+				bill.setMoneyCard(moneyCard);
+				bill.setProducts(products);
+				bill.setQrCode("src/main/resources/qr_code.jpg");
+				bill.setBarcode("src/main/resources/barcode.png");
+				bill.setSpecialMessage(
+						"Tổng đài góp ý/khiếu nại:1800 1067.\n" 
+						+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
+						+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
+						+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
+						+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
+						+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.");
+				System.out.println(bill.getSpecialMessage());
+				html = Template.getTemplate(bill);
 				try {
 					writeTemplate("src\\main\\java\\com\\project1\\template.html", html);
 				} catch (IOException e) {
@@ -69,17 +86,26 @@ public class RootFrame extends JFrame{
 				
 				jEditorPane.setContentType("text/html");
 				jEditorPane.setText(html);
+				
+				
 		});
 	}
-
-
 
 	private void setProperties() throws DocumentException, IOException {
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		jEditorPane.setEditable(false);
+
 		jEditorPane.setContentType("text/html");
-		jEditorPane.setText(html);
+		Bill bill = new Bill();
+		bill.setSpecialMessage(
+				"Tổng đài góp ý/khiếu nại:1800 1067.\n" 
+				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
+				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
+				+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
+				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
+				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.");
+		jEditorPane.setText(Template.getTemplate(bill));
 		
 		displayPanel.add(new JScrollPane(jEditorPane));
 		
