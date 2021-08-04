@@ -1,6 +1,6 @@
 package com.project1.model;
 
-public class Payment {
+public class Bill {
 
 	private String address;
 	private String soCT;
@@ -9,11 +9,11 @@ public class Payment {
 
 	private Product product;
 
-	public Payment() {
+	public Bill() {
 		super();
 	}
 
-	public Payment(String address, String soCT, String dateTime, String nhanVien) {
+	public Bill(String address, String soCT, String dateTime, String nhanVien) {
 		super();
 		this.address = address;
 		this.soCT = soCT;
@@ -21,7 +21,7 @@ public class Payment {
 		this.nhanVien = nhanVien;
 	}
 
-	public Payment(String address, String soCT, String dateTime, String nhanVien, Product product) {
+	public Bill(String address, String soCT, String dateTime, String nhanVien, Product product) {
 		super();
 		this.address = address;
 		this.soCT = soCT;

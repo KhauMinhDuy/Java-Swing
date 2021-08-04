@@ -19,7 +19,7 @@ import javax.swing.border.Border;
 import com.itextpdf.text.DocumentException;
 import com.project1.event.FormEvent;
 import com.project1.event.FormListener;
-import com.project1.model.Payment;
+import com.project1.model.Bill;
 import com.project1.util.HtmlToPdf;
 
 
@@ -51,7 +51,6 @@ public class FormPanel extends JPanel{
 	private JCheckBox tienTheCheck;
 	
 	private FormListener formListener;
-	
 	
 	public FormPanel() {
 		setControl();
@@ -93,8 +92,8 @@ public class FormPanel extends JPanel{
 			String dateTime = dateTimeField.getText();
 			String emp = empField.getText();
 			
-			Payment order = new Payment(address, soCT, dateTime, emp);
-			FormEvent formEvent = new FormEvent(this, order);
+			Bill bill = new Bill(address, soCT, dateTime, emp);
+			FormEvent formEvent = new FormEvent(this, bill);
 			
 			if(formListener != null) {
 				formListener.formPerforment(formEvent);

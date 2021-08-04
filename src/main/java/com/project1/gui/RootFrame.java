@@ -1,6 +1,7 @@
 package com.project1.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -101,7 +102,7 @@ public class RootFrame extends JFrame{
 		add(displayPanel, BorderLayout.CENTER);
 		add(formPanel, BorderLayout.WEST);
 		
-		setSize(1200, 1000);
+		setMinimumSize(new Dimension(1200, 1000));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);

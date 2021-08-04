@@ -2,34 +2,34 @@ package com.project1.event;
 
 import java.util.EventObject;
 
-import com.project1.model.Payment;
+import com.project1.model.Bill;
 
 public class FormEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Payment order;
+	private Bill bill;
 
-	public FormEvent(Object source, Payment order) {
+	public FormEvent(Object source, Bill bill) {
 		super(source);
 
-		this.order = order;
+		this.bill = bill;
 	}
 
 	public String getAddress() {
-		return order.getAddress();
+		return bill.getAddress();
 	}
 	
 	public String getSoCT() {
-		return order.getSoCT();
+		return bill.getSoCT();
 	}
 	
 	public String getDateTime() {
-		return order.getDateTime();
+		return bill.getDateTime();
 	}
 	
 	public String getEmployee() {
-		return order.getNhanVien();
+		return bill.getNhanVien();
 	}
 
 }
