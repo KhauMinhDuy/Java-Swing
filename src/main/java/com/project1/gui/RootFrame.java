@@ -3,7 +3,6 @@ package com.project1.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 
 import com.itextpdf.text.DocumentException;
-import com.project1.App;
 import com.project1.Template;
 
 public class RootFrame extends JFrame{
@@ -52,9 +50,6 @@ public class RootFrame extends JFrame{
 
 	private void setEvent() throws IOException{
 		formPanel.addFormPerforment(event -> {
-		
-				String path = "src\\main\\java\\com\\project1\\template.html";
-				
 				String address = event.getAddress();
 				String soCT = event.getSoCT();
 				String dateTime = event.getDateTime();
@@ -64,22 +59,11 @@ public class RootFrame extends JFrame{
 				boolean tienThe = event.getTienThe();
 				html = Template.getTemplate(address, soCT, dateTime, employee, 
 						giamGia, phieuMH, tienThe);
-				
-//				String html = readFiletemplate(path);
-				
-//				String replaceAddress = Utils.replaceParams(html, "diachi", address);
-//				String replaceSoCT = Utils.replaceParams(replaceAddress, "soCT", soCT);
-//				String replaceDateTime = Utils.replaceParams(replaceSoCT, "ngayCT", dateTime);
-//				String replaceEmp = Utils.replaceParams(replaceDateTime, "nhanvien", employee);
-//				
 				try {
 					writeTemplate("src\\main\\java\\com\\project1\\template.html", html);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-//				
-//				TimeUnit.SECONDS.sleep(3);
-				
 				Document doc = jEditorPane.getDocument();
 				doc.putProperty(Document.StreamDescriptionProperty, null);
 				
@@ -94,8 +78,6 @@ public class RootFrame extends JFrame{
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		jEditorPane.setEditable(false);
-		URL url = App.class.getResource("template.html");
-		//			jEditorPane.setPage(url);
 		jEditorPane.setContentType("text/html");
 		jEditorPane.setText(html);
 		
