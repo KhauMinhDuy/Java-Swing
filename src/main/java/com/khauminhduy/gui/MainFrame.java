@@ -62,6 +62,7 @@ public class MainFrame extends JFrame {
 
 		formPanel.addFormEventOccured(event -> {
 			controller.addPerson(event);
+			tablePanel.refresh();
 		});
 	}
 
@@ -123,20 +124,24 @@ public class MainFrame extends JFrame {
 		});
 
 		exportDataItem.addActionListener(event -> {
-
-			String inputDialog = JOptionPane.showInputDialog(this, "Enter your name", "Your Name",
-					JOptionPane.OK_OPTION | JOptionPane.INFORMATION_MESSAGE);
-			System.out.println(inputDialog);
+			int openDialog = fileChooser.showOpenDialog(this);
+			if (openDialog == JFileChooser.APPROVE_OPTION) {
+				try {
+					controller.saveToFile(fileChooser.getSelectedFile());
+					System.out.println("Done");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		});
 
 		importDataItem.addActionListener(event -> {
 			int openDialog = fileChooser.showOpenDialog(this);
 			if (openDialog == JFileChooser.APPROVE_OPTION) {
-				System.out.println(fileChooser.getSelectedFile());
 				try {
-					List<String> readAllLines = Files.readAllLines(Paths.get(fileChooser.getSelectedFile().getPath()));
-					readAllLines.forEach(System.out::println);
-				} catch (IOException e) {
+					controller.loadToFile(fileChooser.getSelectedFile());
+					tablePanel.refresh();
+				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}

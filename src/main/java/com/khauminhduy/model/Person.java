@@ -1,7 +1,11 @@
 package com.khauminhduy.model;
 
-public class Person {
+import java.io.Serializable;
 
+public class Person implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	private static int count = 0;
 	private int id;
 	private String name;
@@ -89,6 +93,13 @@ public class Person {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	@Override
+	public String toString() {
+		return "Person [id=" + id + ", name=" + name + ", occupation=" + occupation + ", ageCategory=" + ageCategory
+				+ ", employee=" + employee + ", taxId=" + taxId + ", usCitizen=" + usCitizen + ", gender=" + gender
+				+ "]";
 	}
 
 }

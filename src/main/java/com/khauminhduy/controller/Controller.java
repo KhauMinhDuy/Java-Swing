@@ -1,5 +1,7 @@
 package com.khauminhduy.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import com.khauminhduy.db.Database;
@@ -71,5 +73,13 @@ public class Controller {
 	
 	public List<Person> getPersons() {
 		return database.getPersons();
+	}
+	
+	public void saveToFile(File file) throws IOException {
+		database.saveToFile(file);
+	}
+	
+	public void loadToFile(File file) throws ClassNotFoundException, IOException {
+		database.loadToFile(file);
 	}
 }
