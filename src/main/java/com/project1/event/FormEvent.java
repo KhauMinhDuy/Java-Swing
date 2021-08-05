@@ -49,4 +49,10 @@ public class FormEvent extends EventObject {
 	public List<Product> getProducts() {
 		return bill.getProducts();
 	}
+	
+	public int getTotalAmount() {
+		return bill.getTotalAmount();
+	}
+	
+
 }

@@ -38,41 +38,34 @@ public class RootFrame extends JFrame{
 
 	private void setControl() throws DocumentException, IOException {
 		setLayout(new BorderLayout());
-		
 		displayPanel = new JPanel();
 		jEditorPane = new JEditorPane();
 		formPanel = new FormPanel();
-		
-		
 	}
 	
-
 	private void setEvent(){
+		
 		formPanel.addFormPerforment(event -> {
-				String address = event.getStoreAddress();
-				String soCT = event.getOutputVoucherID();
-				String dateTime = event.getOutputDATE();
-				String employee = event.getOutputUSER();
-				Integer totalDiscount = event.getTotalDiscount();
-				Integer totalGiftVoucherAmount = event.getTotalGiftVoucherAmount();
-				Integer moneyCard = event.getMoneyCard();
+			
+				String storeAddress = event.getStoreAddress();
+				String outputVoucherId = event.getOutputVoucherID();
+				String outputDate = event.getOutputDATE();
+				String outputUser = event.getOutputUSER();
+				int totalDiscount = event.getTotalDiscount();
+				int totalGiftVoucherAmount = event.getTotalGiftVoucherAmount();
+				int moneyCard = event.getMoneyCard();
+				int totalAmount = event.getTotalAmount();
 				List<Product> products = event.getProducts();
 				
 				
-				Bill bill = new Bill(address, soCT, dateTime, employee);
-				bill.setTotalAmount(1000);
+				Bill bill = new Bill(storeAddress, outputVoucherId, outputDate, outputUser);
+				bill.setTotalAmount(totalAmount);
 				bill.setTotalDiscount(totalDiscount);
 				bill.setTotalGiftVoucherAmount(totalGiftVoucherAmount);
 				bill.setMoneyCard(moneyCard);
 				bill.setProducts(products);
 				bill.setQrCode("src/main/resources/qr_code.jpg");
 				bill.setBarcode("src/main/resources/barcode.png");
-				System.out.println(bill.getTotalAmount());
-				System.out.println(bill.getTotalDiscount());
-				System.out.println(bill.getTotalGiftVoucherAmount());
-				System.out.println(bill.getMoneyCard());
-				System.out.println(bill.getTotalAmountRound());
-				
 				
 				html = Template.getTemplate(bill);
 				try {
@@ -96,11 +89,8 @@ public class RootFrame extends JFrame{
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		jEditorPane.setEditable(false);
-
 		jEditorPane.setContentType("text/html");
-		Bill bill = new Bill();
-		jEditorPane.setText(Template.getTemplate(bill));
-		
+		jEditorPane.setText(Template.getTemplate( new Bill()));
 		displayPanel.add(new JScrollPane(jEditorPane));
 		
 		add(displayPanel, BorderLayout.CENTER);
@@ -109,6 +99,7 @@ public class RootFrame extends JFrame{
 		setMinimumSize(new Dimension(1200, 1000));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		pack();
 		setVisible(true);
 		
 	}

@@ -39,6 +39,8 @@ public class Bill {
 		this.outputDATE = outputDATE;
 		this.outputUSER = outputUSER;
 	}
+	
+	
 
 	public String getCompanyName() {
 		return companyName;

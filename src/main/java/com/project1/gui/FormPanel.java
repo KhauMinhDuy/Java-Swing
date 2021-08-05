@@ -10,11 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -38,6 +42,10 @@ public class FormPanel extends JPanel{
 	private JLabel totalDiscountLabel;
 	private JLabel totalGiftVoucherLabel;
 	private JLabel moneyCardLabel;
+	private JLabel quantityLabel;
+	private JLabel productNameLabel;
+	private JLabel salePriceLabel;
+	private JLabel productNameListLabel;
 	
 	private JTextArea storeAddressField;
 	private JTextField outputVoucherIdField;
@@ -46,6 +54,9 @@ public class FormPanel extends JPanel{
 	private JTextField totalDiscountField;
 	private JTextField totalGiftVoucherField;
 	private JTextField moneyCardField;
+	private JTextField quantityField;
+	private JTextField productNameField;
+	private JTextField salePriceField;
 	
 	private JButton luuBtn;
 	private JButton inBtn;
@@ -53,6 +64,11 @@ public class FormPanel extends JPanel{
 	private JCheckBox totalDiscountCheck;
 	private JCheckBox totalGiftVoucherCheck;
 	private JCheckBox moneyCardCheck;
+	
+	private JList<String> productNameList;
+	DefaultListModel<String> model;
+	
+	private List<Product> products;
 	
 	private FormListener formListener;
 	
@@ -70,6 +86,10 @@ public class FormPanel extends JPanel{
 		totalDiscountLabel = new JLabel("Đã Giảm: ");
 		totalGiftVoucherLabel = new JLabel("Phiếu Mua Hàng: ");
 		moneyCardLabel = new JLabel("Tiền Cà Thẻ: ");
+		quantityLabel = new JLabel("Số Lượng: ");
+		productNameLabel = new JLabel("Tên Sản Phẩm: ");
+		salePriceLabel = new JLabel("Giá Bán: ");
+		productNameListLabel = new JLabel("Danh Sách Sản Phẩm: ");
 		
 		storeAddressField = new JTextArea(3, 20);
 		outputVoucherIdField = new JTextField(20);
@@ -78,6 +98,9 @@ public class FormPanel extends JPanel{
 		totalDiscountField = new JTextField(20);
 		totalGiftVoucherField = new JTextField(20);
 		moneyCardField = new JTextField(20);
+		quantityField = new JTextField(20);
+		productNameField = new JTextField(20);
+		salePriceField = new JTextField(20);
 		
 		luuBtn = new JButton("Luu");
 		inBtn = new JButton("IN");
@@ -85,6 +108,15 @@ public class FormPanel extends JPanel{
 		totalDiscountCheck = new JCheckBox();
 		totalGiftVoucherCheck = new JCheckBox();
 		moneyCardCheck = new JCheckBox();
+		
+		productNameList = new JList<>();
+		model = new DefaultListModel<>();
+		productNameList.setModel(model);
+		productNameList.setPreferredSize(new Dimension(200, 60));
+		productNameList.setBorder(BorderFactory.createEtchedBorder());
+		productNameList.setSelectedIndex(0);
+		
+		products = new ArrayList<>();
 		
 	}
 
@@ -108,16 +140,30 @@ public class FormPanel extends JPanel{
 				moneyCard = moneyCardField.getText();
 			}
 			
+			String productName = productNameField.getText();
+			String quantity = quantityField.getText();
+			String salePrice = salePriceField.getText();
+			if(!productName.equals("")) {
+				model.addElement(productName);
+				products.add(new Product(productName, processNumberFormat(quantity), processNumberFormat(salePrice)));
+			}
+			
 			Bill bill = new Bill(storeAddress, outputVoucherId, outputDate, outputUser);
 			bill.setTotalDiscount(processNumberFormat(totalDiscount));
 			bill.setTotalGiftVoucherAmount(processNumberFormat(giftdiscount));
 			bill.setMoneyCard(processNumberFormat(moneyCard));
-			bill.setProducts(getProducts());
+			bill.setProducts(products);
+			
+			
 			
 			FormEvent formEvent = new FormEvent(this, bill);
 			if(formListener != null) {
 				formListener.formPerforment(formEvent);
 			}
+			productNameField.setText("");
+			quantityField.setText("");
+			salePriceField.setText("");
+			
 			
 		});
 		
@@ -152,8 +198,11 @@ public class FormPanel extends JPanel{
 		
 		storeAddressField.setText("193-195 Dương Văn Dương, P.Tân Quý, Q.Tân Bình, Tp.HCM");
 		outputVoucherIdField.setText("2108001160001439");
-		outputDateField.setText("01/08/2021 13:13");
+		outputDateField.setText("05/08/2021 13:13");
 		outputUserField.setText("Khấu Minh Duy");
+		productNameField.setText("Dưa Leo");
+		quantityField.setText("10");
+		salePriceField.setText("10000");
 		
 		totalDiscountField.setEnabled(false);
 		totalGiftVoucherField.setEnabled(false);
@@ -191,9 +240,7 @@ public class FormPanel extends JPanel{
 		add(storeAddressField, gc);
 		
 		// Row 2
-		
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
@@ -209,9 +256,7 @@ public class FormPanel extends JPanel{
 		add(outputVoucherIdField, gc);
 		
 		// Row 3
-		
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
@@ -229,7 +274,6 @@ public class FormPanel extends JPanel{
 		// Row 4
 		
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
@@ -245,14 +289,76 @@ public class FormPanel extends JPanel{
 		add(outputUserField, gc);
 		
 		// Row 5
-		
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(productNameLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.LINE_START;
-		gc.insets = new Insets(0, 80, 0, 0);
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(productNameField, gc);
+		
+		// Row 6
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(quantityLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(quantityField, gc);
+		
+		// Row 7
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(salePriceLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(salePriceField, gc);
+		
+		// Row 8
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(productNameListLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(new JScrollPane(productNameList), gc);
+		
+		// Row 9
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 20);
 		add(totalDiscountLabel, gc);
 		
 		gc.gridx = 0;
@@ -269,15 +375,13 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(totalDiscountField, gc);
 		
-		// Row 6
-		
+		// Row 10
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.LINE_START;
-		gc.insets = new Insets(0, 80, 0, 0);
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 20);
 		add(totalGiftVoucherLabel, gc);
 		
 		gc.gridx = 0;
@@ -294,15 +398,13 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(totalGiftVoucherField, gc);
 		
-		// Row 7
-		
+		// Row 11
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 0.1;
-		gc.anchor = GridBagConstraints.LINE_START;
-		gc.insets = new Insets(0, 80, 0, 0);
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 20);
 		add(moneyCardLabel, gc);
 		
 		gc.gridx = 0;
@@ -319,10 +421,8 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(moneyCardField, gc);
 		
-		// Row 8
-		
+		// Row 12
 		gc.gridy++;
-		
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 1;
@@ -356,10 +456,12 @@ public class FormPanel extends JPanel{
 		Product dualeo = new Product("Dua Leo", 10, 19216);
 		Product bia333 = new Product("BIA 333 LON 330ML THUNG 24", 10, 225784);
 		Product migoi = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 1, 3900);
+		Product migoi2 = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 10, 3900);
 		
 		products.add(dualeo);
 		products.add(bia333);
 		products.add(migoi);
+		products.add(migoi2);
 		
 		return products;
 	}
