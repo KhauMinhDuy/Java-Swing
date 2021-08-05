@@ -1,9 +1,9 @@
 package com.project2.gui;
 
-import javax.swing.JPanel;
 import java.awt.FlowLayout;
+
 import javax.swing.JButton;
-import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 public class BottomPanel extends JPanel {
 

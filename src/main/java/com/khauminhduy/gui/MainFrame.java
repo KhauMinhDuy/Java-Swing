@@ -29,8 +29,11 @@ public class MainFrame extends JFrame {
 	private TextPanel textPanel;
 	private ToolBar toolBar;
 	private FormPanel formPanel;
-	private Controller controller;
+	private TablePanel tablePanel;
+	
 	private JFileChooser fileChooser;
+	
+	private Controller controller;
 
 	public MainFrame() {
 		super("Hello World");
@@ -42,7 +45,7 @@ public class MainFrame extends JFrame {
 	private void setProperties() {
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
-		add(textPanel, BorderLayout.CENTER);
+		add(tablePanel, BorderLayout.CENTER);
 		add(formPanel, BorderLayout.WEST);
 
 		setJMenuBar(createMenu());
@@ -69,11 +72,15 @@ public class MainFrame extends JFrame {
 		
 		formPanel = new FormPanel();
 		
+		tablePanel = new TablePanel();
+		
 		fileChooser = new JFileChooser();
 		fileChooser.addChoosableFileFilter(new FileExtenstions("txt"));
 		fileChooser.addChoosableFileFilter(new FileExtenstions("pdf"));
 		
 		controller = new Controller();
+		
+		tablePanel.setData(controller.getPersons());
 		
 	}
 

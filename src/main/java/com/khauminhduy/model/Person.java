@@ -7,18 +7,16 @@ public class Person {
 	private String name;
 	private String occupation;
 	private AgeCategory ageCategory;
-	private String employee;
+	private Employment employee;
 	private String taxId;
 	private boolean usCitizen;
 	private Gender gender;
 
 	public Person() {
-		super();
 	}
 
-	public Person(String name, String occupation, AgeCategory ageCategory, String employee, String taxId,
+	public Person(String name, String occupation, AgeCategory ageCategory, Employment employee, String taxId,
 			boolean usCitizen, Gender gender) {
-		super();
 		this.id = count++;
 		this.name = name;
 		this.occupation = occupation;
@@ -61,11 +59,11 @@ public class Person {
 		this.ageCategory = ageCategory;
 	}
 
-	public String getEmployee() {
+	public Employment getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(String employee) {
+	public void setEmployee(Employment employee) {
 		this.employee = employee;
 	}
 

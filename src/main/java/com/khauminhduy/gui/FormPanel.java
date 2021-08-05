@@ -69,8 +69,11 @@ public class FormPanel extends JPanel {
 		nameField = new JTextField(10);
 		occupationField = new JTextField(10);
 		taxField = new JTextField(10);
+		
 		okBtn = new JButton("OK");
+		
 		citizenCheck = new JCheckBox();
+		
 		maleRadio = new JRadioButton("Male");
 		maleRadio.setActionCommand("Male");
 		femaleRadio = new JRadioButton("Female");
