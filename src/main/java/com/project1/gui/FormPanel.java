@@ -5,12 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -130,6 +128,7 @@ public class FormPanel extends JPanel{
 			String totalDiscount = "";
 			String giftdiscount = "";
 			String moneyCard = "";
+			
 			if(totalDiscountCheck.isSelected()) {
 				totalDiscount = totalDiscountField.getText();
 			}
@@ -145,13 +144,20 @@ public class FormPanel extends JPanel{
 			String salePrice = salePriceField.getText();
 			if(!productName.equals("")) {
 				model.addElement(productName);
-				products.add(new Product(productName, processNumberFormat(quantity), processNumberFormat(salePrice)));
+				products.add(new Product(productName, processNumberFormatException(quantity), processNumberFormatException(salePrice)));
 			}
 			
-			Bill bill = new Bill(storeAddress, outputVoucherId, outputDate, outputUser);
-			bill.setTotalDiscount(processNumberFormat(totalDiscount));
-			bill.setTotalGiftVoucherAmount(processNumberFormat(giftdiscount));
-			bill.setMoneyCard(processNumberFormat(moneyCard));
+			Bill bill = new Bill(
+					storeAddress, 
+					outputVoucherId, 
+					outputDate, 
+					outputUser,
+					0, // totalamount
+					processNumberFormatException(totalDiscount), 
+					processNumberFormatException(giftdiscount),
+					processNumberFormatException(moneyCard), 
+					"", // barcode base64
+					""); // qrcode base64
 			bill.setProducts(products);
 			
 			
@@ -443,7 +449,7 @@ public class FormPanel extends JPanel{
 		this.formListener = formListener;
 	}
 	
-	private Integer processNumberFormat(String input) {
+	private int processNumberFormatException(String input) {
 		try {
 			return Integer.parseInt(input);
 		} catch(NumberFormatException e) {
@@ -465,6 +471,5 @@ public class FormPanel extends JPanel{
 		
 		return products;
 	}
-
 	
 }

@@ -32,12 +32,20 @@ public class Bill {
 				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.";
 	}
 
-	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER) {
+	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER,
+			int totalAmount, int totalDiscount, int totalGiftVoucherAmount, int moneyCard,
+			String barcode, String qrcode) {
 		this();
 		this.storeAddress = storeAddress;
 		this.outputVoucherID = outputVoucherID;
 		this.outputDATE = outputDATE;
 		this.outputUSER = outputUSER;
+		this.totalAmount = totalAmount;
+		this.totalDiscount = totalDiscount;
+		this.totalGiftVoucherAmount = totalGiftVoucherAmount;
+		this.moneyCard = moneyCard;
+		this.barcode = barcode;
+		this.qrCode = qrcode;
 	}
 	
 	
@@ -164,5 +172,7 @@ public class Bill {
 	public void setSpecialMessage(String specialMessage) {
 		this.specialMessage = specialMessage;
 	}
+	
+	
 
 }
