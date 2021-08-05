@@ -16,6 +16,7 @@ append("    table {");
 append("        font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif;");
 append("        font-size: 16px;");
 append("        width: 380px;");
+append("		margin: 0 auto;");
 append("    }");
 append("        table td {");
 append("            line-height: 1.2em;");
