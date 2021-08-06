@@ -135,13 +135,36 @@ public class RootFrame extends JFrame{
 			Element proNameClone = productName.clone();
 			Element proDetailClone = productDetail.clone();
 			Product product = bill.getProducts().get(i);
-			productName.child(0).text(product.getProductName());
-			productDetail.child(0).text(String.valueOf(product.getQuantity()));
-			productDetail.child(0).addClass("text-center");
-			productDetail.child(1).text(formatCurrency(product.getSalePriceVAT()));
-			productDetail.child(1).addClass("text-right");
-			productDetail.child(2).text(formatCurrency(product.getTotalAmountVAT()));
-			productDetail.child(2).addClass("text-right");
+			
+			for(Element e :  productName.children()) {
+				switch(e.text()) {
+				case "PRODUCTNAME":
+					e.text(String.valueOf(product.getProductName()));
+					break;
+				
+			}
+			for (Element detail : productDetail.children()) {
+				switch (detail.text()) {
+				case "QUANTITY":
+					detail.text(formatCurrency(product.getQuantity()));
+					break;
+				case "SALEPRICE":
+					detail.text(formatCurrency(product.getSalePriceVAT()));
+					break;
+				case "TOTALAMOUNTVAT":
+					detail.text(formatCurrency(product.getTotalAmountVAT()));
+					break;
+				}
+			}
+			}
+			
+//			productName.child(0).text(product.getProductName());
+//			productDetail.child(0).text(String.valueOf(product.getQuantity()));
+//			productDetail.child(0).addClass("text-center");
+//			productDetail.child(1).text(formatCurrency(product.getSalePriceVAT()));
+//			productDetail.child(1).addClass("text-right");
+//			productDetail.child(2).text(formatCurrency(product.getTotalAmountVAT()));
+//			productDetail.child(2).addClass("text-right");
 			if(i == bill.getProducts().size() - 1) break;
 			productDetail.after(proNameClone);
 			productName = proNameClone;
