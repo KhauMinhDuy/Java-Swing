@@ -2,7 +2,6 @@ package com.project1.util;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,8 +9,6 @@ import java.util.Base64;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;

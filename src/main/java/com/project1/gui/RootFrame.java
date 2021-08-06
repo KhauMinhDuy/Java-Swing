@@ -158,13 +158,6 @@ public class RootFrame extends JFrame{
 			}
 			}
 			
-//			productName.child(0).text(product.getProductName());
-//			productDetail.child(0).text(String.valueOf(product.getQuantity()));
-//			productDetail.child(0).addClass("text-center");
-//			productDetail.child(1).text(formatCurrency(product.getSalePriceVAT()));
-//			productDetail.child(1).addClass("text-right");
-//			productDetail.child(2).text(formatCurrency(product.getTotalAmountVAT()));
-//			productDetail.child(2).addClass("text-right");
 			if(i == bill.getProducts().size() - 1) break;
 			productDetail.after(proNameClone);
 			productName = proNameClone;
