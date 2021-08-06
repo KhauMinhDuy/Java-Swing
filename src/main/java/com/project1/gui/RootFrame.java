@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
 
 import com.itextpdf.text.DocumentException;
 import com.project1.model.Bill;
+import com.project1.model.Customer;
 import com.project1.model.Product;
 import com.project1.util.Utils;
 
@@ -56,6 +57,8 @@ public class RootFrame extends JFrame{
 		
 		formPanel.addFormPerforment(event -> {
 			try {
+				
+				
 				Bill bill = new Bill(
 						event.getStoreAddress(), 
 						event.getOutputVoucherID(), 
@@ -69,19 +72,23 @@ public class RootFrame extends JFrame{
 						Utils.generateBarcode128(event.getOutputVoucherID()),
 						Utils.generateQRCodeImage(event.getQRCode())
 					);
+				bill.setCustomer(new Customer(event.getCustomerName(), event.getCustomerPhone()));
 				
 				html = readFiletemplate(PATH_FILE_NO_QR);
 				html = replaceStr(html, bill);
 				writeTemplate("src\\main\\resources\\pdf.html", html);
+
+				Document doc = jEditorPane.getDocument();
+				doc.putProperty(Document.StreamDescriptionProperty, null);
+
+				jEditorPane.setContentType("text/html");
+				jEditorPane.setText(html);
+				
+				
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
-			Document doc = jEditorPane.getDocument();
-			doc.putProperty(Document.StreamDescriptionProperty, null);
-
-			jEditorPane.setContentType("text/html");
-			jEditorPane.setText(html);
 		});
 	}
 
@@ -216,10 +223,18 @@ public class RootFrame extends JFrame{
 				td.text(bill.getOutputUSER());
 				break;
 			case "CUSTOMERNAME":
-				td.parent().remove();
+				if(bill.getCustomer().getCustomerName() != null) {
+					td.text(bill.getCustomer().getCustomerName());
+				} else {
+					td.parent().remove();
+				}
 				break;
 			case "CUSTOMERPHONE":
-				td.parent().remove();
+				if(bill.getCustomer().getCustomerPhone() != null) {
+					td.text(bill.getCustomer().getCustomerPhone());
+				} else {
+					td.parent().remove();
+				}
 				break;
 			case "TOTALAMOUNT":
 				td.text(formatCurrency(bill.getTotalAmount()));

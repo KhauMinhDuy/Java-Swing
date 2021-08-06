@@ -26,6 +26,7 @@ import com.itextpdf.text.DocumentException;
 import com.project1.event.FormEvent;
 import com.project1.event.FormListener;
 import com.project1.model.Bill;
+import com.project1.model.Customer;
 import com.project1.model.Product;
 import com.project1.util.HtmlToPdf;
 
@@ -76,7 +77,7 @@ public class FormPanel extends JPanel{
 	private JList<String> productNameList;
 	private DefaultListModel<String> modelList;
 	
-	private List<Product> products;
+	private List<Product> productList;
 	
 	private FormListener formListener;
 	
@@ -133,7 +134,7 @@ public class FormPanel extends JPanel{
 		productNameList.setBorder(BorderFactory.createEtchedBorder());
 		productNameList.setSelectedIndex(0);
 		
-		products = new ArrayList<>();
+		productList = new ArrayList<>();
 		
 	}
 
@@ -144,20 +145,22 @@ public class FormPanel extends JPanel{
 			String outputVoucherId = outputVoucherIdField.getText();
 			String outputDate = outputDateField.getText();
 			String outputUser = outputUserField.getText();
-			String totalDiscount = "";
-			String giftdiscount = "";
-			String moneyCard = "";
+			String customerName = customerNameField.getText();
+			String customerPhone = customerPhoneField.getText();
 			String barcode = outputVoucherId;
 			String qrcode = outputVoucherIdField.getText()+ "_SOOL_" + qrCodeField.getText();
 			
+			String totalDiscountStr = "";
 			if(totalDiscountCheck.isSelected()) {
-				totalDiscount = totalDiscountField.getText();
+				totalDiscountStr = totalDiscountField.getText();
 			}
+			String giftdiscountStr = "";
 			if(totalGiftVoucherCheck.isSelected()) {
-				giftdiscount = totalGiftVoucherField.getText();
+				giftdiscountStr = totalGiftVoucherField.getText();
 			}
+			String moneyCardStr = "";
 			if(moneyCardCheck.isSelected()) {
-				moneyCard = moneyCardField.getText();
+				moneyCardStr = moneyCardField.getText();
 			}
 			String productName = productNameField.getText();
 			String quantityStr = quantityField.getText();
@@ -175,20 +178,22 @@ public class FormPanel extends JPanel{
 			
 			if(!productName.equals("") && quantity != 0 && salePrice != 0) {
 				modelList.addElement(productName);
-				products.add(new Product(productName, quantity, salePrice, salePriceDiscount));
+				productList.add(new Product(productName, quantity, salePrice, salePriceDiscount));
 			}
+			
 			Bill bill = new Bill(
 					storeAddress, 
 					outputVoucherId, 
 					outputDate, 
 					outputUser,
-					products,
+					productList,
 					0, // totalamount
-					processNumberFormatException(totalDiscount), 
-					processNumberFormatException(giftdiscount),
-					processNumberFormatException(moneyCard), 
+					processNumberFormatException(totalDiscountStr), 
+					processNumberFormatException(giftdiscountStr),
+					processNumberFormatException(moneyCardStr), 
 					barcode, 
 					qrcode); 
+			bill.setCustomer(new Customer(customerName, customerPhone));
 			
 			FormEvent formEvent = new FormEvent(this, bill);
 			if(formListener != null) {
@@ -199,6 +204,9 @@ public class FormPanel extends JPanel{
 			quantityField.setText("");
 			salePriceField.setText("");
 			salePriceDiscountField.setText("");
+
+			
+			
 			
 		});
 		

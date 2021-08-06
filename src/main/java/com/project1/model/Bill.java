@@ -42,7 +42,7 @@ public class Bill {
 		this.outputVoucherID = "";
 		this.outputDATE = "";
 		this.outputUSER = "";
-
+		customer = new Customer();
 		this.cashVND = 0;
 		this.products = Collections.emptyList();
 	}

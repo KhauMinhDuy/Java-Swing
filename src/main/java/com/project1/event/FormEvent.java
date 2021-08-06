@@ -58,5 +58,12 @@ public class FormEvent extends EventObject {
 		return bill.getQrCode();
 	}
 	
-
+	public String getCustomerName() {
+		return bill.getCustomer().getCustomerName();
+	}
+	
+	public String getCustomerPhone() {
+		return bill.getCustomer().getCustomerPhone();
+	}
+	
 }
