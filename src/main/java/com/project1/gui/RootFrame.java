@@ -84,9 +84,6 @@ public class RootFrame extends JFrame{
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		
 		String readFiletemplate = readFiletemplate(PATH_FILE);
-		readFiletemplate = readFiletemplate.replace("COMPANYNAME", "BACH HOA XANH");
-		readFiletemplate = readFiletemplate.replace("WEBSITE", "www.bachhoaxanh");
-		
 		jEditorPane.setEditable(false);
 		jEditorPane.setContentType("text/html");
 		jEditorPane.setText(readFiletemplate);
