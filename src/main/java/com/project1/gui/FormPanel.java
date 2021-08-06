@@ -175,7 +175,7 @@ public class FormPanel extends JPanel{
 		
 		inBtn.addActionListener(event -> {
 			try {
-				HtmlToPdf.convert("src\\main\\java\\com\\project1\\template.html",
+				HtmlToPdf.convert("src\\main\\resources\\pdf.html",
 						"src\\main\\resources\\bill.pdf");
 				JOptionPane.showMessageDialog(this, "In Hoa Don Thanh Cong (src\\main\\resources\\bill.pdf)");
 			} catch (DocumentException | IOException e) {

@@ -172,7 +172,5 @@ public class Bill {
 	public void setSpecialMessage(String specialMessage) {
 		this.specialMessage = specialMessage;
 	}
-	
-	
 
 }

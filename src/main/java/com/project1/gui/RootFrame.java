@@ -21,6 +21,8 @@ import com.project1.util.Utils;
 
 public class RootFrame extends JFrame{
 
+	private static final String PATH_FILE = "src\\main\\java\\com\\project1\\template.html";
+
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel displayPanel;
@@ -36,7 +38,7 @@ public class RootFrame extends JFrame{
 		setProperties();
 	}
 
-	private void setControl() throws DocumentException, IOException {
+	private void setControl() {
 		setLayout(new BorderLayout());
 		displayPanel = new JPanel();
 		jEditorPane = new JEditorPane();
@@ -61,11 +63,10 @@ public class RootFrame extends JFrame{
 						Utils.generateQRCodeImage(event.getOutputVoucherID()+"_SOOL_"+45748660));
 				bill.setProducts(products);
 				
-				html = readFiletemplate("src\\main\\java\\com\\project1\\index.html");
+				html = readFiletemplate(PATH_FILE);
 				html = replaceStr(html, bill);
 				
-				writeTemplate("src\\main\\java\\com\\project1\\template.html", html);
-				
+				writeTemplate("src\\main\\resources\\pdf.html", html);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -78,12 +79,11 @@ public class RootFrame extends JFrame{
 		});
 	}
 
-	private void setProperties() throws DocumentException, IOException {
+	private void setProperties() throws IOException {
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		
-		String file = new String("src\\main\\java\\com\\project1\\index.html");
-		String readFiletemplate = readFiletemplate(file);
+		String readFiletemplate = readFiletemplate(PATH_FILE);
 		readFiletemplate = readFiletemplate.replace("COMPANYNAME", "BACH HOA XANH");
 		readFiletemplate = readFiletemplate.replace("WEBSITE", "www.bachhoaxanh");
 		
@@ -113,8 +113,8 @@ public class RootFrame extends JFrame{
 		return stringBuffer.toString();
 	}
 	
-	private void writeTemplate(String string, String html) throws IOException {
-		Files.write(Paths.get(string), html.getBytes());
+	private void writeTemplate(String path, String html) throws IOException {
+		Files.write(Paths.get(path), html.getBytes());
 	}
 	
 	private String replaceStr(String html, Bill bill) {

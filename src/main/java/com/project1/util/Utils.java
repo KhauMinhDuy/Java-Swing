@@ -11,13 +11,16 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import net.sourceforge.barbecue.Barcode;
+import net.sourceforge.barbecue.BarcodeException;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
+import net.sourceforge.barbecue.output.OutputException;
 
 public class Utils {
 
@@ -30,7 +33,7 @@ public class Utils {
 		return replaceParams(src, name, value, "\\$\\{", "\\}");
 	}
 
-	public static String generateBarcode128(String barcodeText) throws Exception {
+	public static String generateBarcode128(String barcodeText) throws BarcodeException, OutputException, IOException {
 		Barcode barcode = BarcodeFactory.createCode128(barcodeText);
 		barcode.setDrawingText(false);
 		BufferedImage image = BarcodeImageHandler.getImage(barcode);
@@ -39,7 +42,7 @@ public class Utils {
 		return Base64.getEncoder().encodeToString(os.toByteArray());
 	}
 
-	public static String generateQRCodeImage(String barcodeText) throws Exception {
+	public static String generateQRCodeImage(String barcodeText) throws IOException, WriterException {
 		QRCodeWriter barcodeWriter = new QRCodeWriter();
 		BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.QR_CODE, 200, 200);
 		BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
