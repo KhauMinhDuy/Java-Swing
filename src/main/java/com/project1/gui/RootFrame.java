@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -13,6 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.text.Document;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.itextpdf.text.DocumentException;
 import com.project1.model.Bill;
@@ -65,7 +70,6 @@ public class RootFrame extends JFrame{
 				
 				html = readFiletemplate(PATH_FILE);
 				html = replaceStr(html, bill);
-				
 				writeTemplate("src\\main\\resources\\pdf.html", html);
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -83,10 +87,11 @@ public class RootFrame extends JFrame{
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		
-		String readFiletemplate = readFiletemplate(PATH_FILE);
+		html = readFiletemplate(PATH_FILE);
+		html  = replaceStr(html, new Bill());
 		jEditorPane.setEditable(false);
 		jEditorPane.setContentType("text/html");
-		jEditorPane.setText(readFiletemplate);
+		jEditorPane.setText(html);
 		
 		displayPanel.add(new JScrollPane(jEditorPane));
 		
@@ -114,21 +119,92 @@ public class RootFrame extends JFrame{
 		Files.write(Paths.get(path), html.getBytes());
 	}
 	
+	private static String formatCurrency(int money) {
+		String s = String.valueOf(money);
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
+        return formatter.format(Double.parseDouble(s));
+    }
+	
 	private String replaceStr(String html, Bill bill) {
-		return html.replace("COMPANYNAME", bill.getCompanyName())
-				.replace("WEBSITE", bill.getWebsite())
-				.replace("STOREADDRESS", bill.getStoreAddress())
-				.replace("OUTPUTVOUCHERID", bill.getOutputVoucherID())
-				.replace("OUTPUTDATE", bill.getOutputDATE())
-				.replace("OUTPUTUSER", bill.getOutputUSER())
-				.replaceFirst("TOTALAMOUNT", String.valueOf(bill.getTotalAmount()))
-				.replace("TOTALDISCOUNT", String.valueOf(bill.getTotalDiscount()))
-				.replace("TOTALGIFTVOUCHERAMOUNT", String.valueOf(bill.getTotalGiftVoucherAmount()))
-				.replace("MONEYCARD", String.valueOf(bill.getMoneyCard()))
-				.replace("TOTALAMOUNTROUND", String.valueOf(bill.getTotalAmountRound()))
-				.replace("IMAGEBARCODEBASE64", bill.getBarcode())
-				.replace("IMAGEQRCODEBASE64", bill.getQrCode())
-				.replace("SPECIALMESSAGE", bill.getSpecialMessage());
+		org.jsoup.nodes.Document doc = Jsoup.parse(html);
+		
+		Elements select = doc.select("tr");
+		for(Element e : select) {
+			System.out.println(e);
+			
+		}
+		
+		
+		Elements elements = doc.body().getElementsByTag("td");
+		for(Element element : elements) {
+			switch(element.text()) {
+			case "COMPANYNAME":
+				element.text(bill.getCompanyName());
+				break;
+			case "WEBSITE":
+				element.text(bill.getWebsite());
+				break;
+			case "STOREADDRESS":
+				element.text(bill.getStoreAddress());
+				break;
+			case "OUTPUTVOUCHERID":
+				element.text(bill.getOutputVoucherID());
+				break;
+			case "OUTPUTDATE":
+				element.text(bill.getOutputDATE());
+				break;
+			case "OUTPUTUSER":
+				element.text(bill.getOutputUSER());
+				break;
+
+			case "TOTALAMOUNT":
+				element.text(formatCurrency(bill.getTotalAmount()));
+				break;
+			case "TOTALDISCOUNT":
+				if(bill.getTotalDiscount() != 0) {
+					element.text(formatCurrency(bill.getTotalDiscount()));
+				} else {
+					element.parent().remove();
+				}
+				break;
+			
+			case "TOTALGIFTVOUCHERAMOUNT":
+				if(bill.getTotalGiftVoucherAmount() != 0) {
+					element.text(formatCurrency(bill.getTotalGiftVoucherAmount()));
+				} else {
+					element.parent().remove();
+				}
+				break;
+			case "MONEYCARD":
+				if(bill.getMoneyCard() != 0) {
+					element.text(formatCurrency(bill.getMoneyCard()));
+				} else {
+					element.parent().remove();
+				}
+				break;
+			case "TOTALAMOUNTROUND":
+				element.text(formatCurrency(bill.getTotalAmountRound()));
+				break;
+			case "SPECIALMESSAGE":
+				element.text(bill.getSpecialMessage());
+				break;
+			case "":
+				element.childNodes().forEach(e -> {
+					String attr = e.attr("src");
+					if(attr.contains("IMAGEQRCODEBASE64")) {
+						attr = attr.replace("IMAGEQRCODEBASE64", bill.getQrCode());
+						e.attr("src", attr);
+					} else if(attr.contains("IMAGEBARCODEBASE64")) {
+						attr = attr.replace("IMAGEBARCODEBASE64", bill.getBarcode());
+						e.attr("src", attr);
+					}
+				});
+				break;
+			
+			}
+			
+		}
+		return doc.toString();
 	}
 	
 }

@@ -4,7 +4,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -51,9 +54,17 @@ public class Utils {
 		return Base64.getEncoder().encodeToString(os.toByteArray());
 	}
 
-	public static String encodeBase64(File file) throws IOException {
-		byte[] readFileToByteArray = FileUtils.readFileToByteArray(file);
-		return Base64.getEncoder().encodeToString(readFileToByteArray);
+	public static String readFiletemplate(String string) throws IOException {
+		List<String> allLines = Files.readAllLines(Paths.get(string));
+		StringBuffer stringBuffer = new StringBuffer();
+		for (String line : allLines) {
+			stringBuffer.append(line);
+		}
+		return stringBuffer.toString();
+	}
+
+	public static void writeTemplate(String path, String html) throws IOException {
+		Files.write(Paths.get(path), html.getBytes());
 	}
 
 }

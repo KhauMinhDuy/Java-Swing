@@ -457,19 +457,4 @@ public class FormPanel extends JPanel{
 		}
 	}
 	
-	private List<Product> getProducts() {
-		List<Product> products = new ArrayList<>();
-		Product dualeo = new Product("Dua Leo", 10, 19216);
-		Product bia333 = new Product("BIA 333 LON 330ML THUNG 24", 10, 225784);
-		Product migoi = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 1, 3900);
-		Product migoi2 = new Product("MÌ HẢO HẢO TÔM CHUA CAY 75G", 10, 3900);
-		
-		products.add(dualeo);
-		products.add(bia333);
-		products.add(migoi);
-		products.add(migoi2);
-		
-		return products;
-	}
-	
 }

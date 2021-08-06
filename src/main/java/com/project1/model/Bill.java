@@ -24,12 +24,18 @@ public class Bill {
 	public Bill() {
 		this.companyName = "BÁCH HÓA XANH";
 		this.website = "www.bachhoaxanh.com";
+		this.storeAddress = "";
 		this.specialMessage = "Tổng đài góp ý/khiếu nại:1800 1067.\n" 
 				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
 				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
 				+ "VAT tại trang web https://hddt.bachhoaxanh.com\n"
 				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
 				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.";
+		this.barcode = "";
+		this.qrCode = "";
+		this.outputVoucherID = "";
+		this.outputDATE = "";
+		this.outputUSER = "";
 	}
 
 	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER,
