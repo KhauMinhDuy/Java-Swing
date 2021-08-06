@@ -1,8 +1,11 @@
 package com.project1.util;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -15,6 +18,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeException;
@@ -62,6 +68,28 @@ public class Utils {
 
 	public static void writeTemplate(String path, String html) throws IOException {
 		Files.write(Paths.get(path), html.getBytes());
+		
+	}
+	public static byte[] writeTemplate(String html) throws IOException {
+		return html.getBytes();
+	}
+	
+	public static void printHtmlPrint(String htmlData, String printName) throws Exception {
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+			Document document = new Document();
+			PdfWriter pdfWriter = PdfWriter.getInstance(document, output);
+			document.open();
+			InputStream in = new ByteArrayInputStream(htmlData.getBytes(Charset.forName("UTF-8")));
+			XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, in);
+			document.close();
+			try(ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray())) {
+				prinfPdf(input, printName, true, false);
+			}
+		}
+	}
+
+	private static void prinfPdf(ByteArrayInputStream input, String printName, boolean b, boolean c) {
+		
 	}
 
 }

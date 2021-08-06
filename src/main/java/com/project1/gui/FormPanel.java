@@ -47,6 +47,9 @@ public class FormPanel extends JPanel{
 	private JLabel productNameListLabel;
 	private JLabel qrCodeLabel;
 	private JLabel qrCodedf;
+	private JLabel salePriceDiscountLabel;
+	private JLabel customerNameLabel;
+	private JLabel customerPhoneLabel;
 	
 	private JTextArea storeAddressField;
 	private JTextField outputVoucherIdField;
@@ -59,6 +62,9 @@ public class FormPanel extends JPanel{
 	private JTextField productNameField;
 	private JTextField salePriceField;
 	private JTextField qrCodeField;
+	private JTextField salePriceDiscountField;
+	private JTextField customerNameField;
+	private JTextField customerPhoneField;
 	
 	private JButton luuBtn;
 	private JButton inBtn;
@@ -68,7 +74,7 @@ public class FormPanel extends JPanel{
 	private JCheckBox moneyCardCheck;
 	
 	private JList<String> productNameList;
-	DefaultListModel<String> model;
+	private DefaultListModel<String> modelList;
 	
 	private List<Product> products;
 	
@@ -94,6 +100,9 @@ public class FormPanel extends JPanel{
 		productNameListLabel = new JLabel("Danh Sách Sản Phẩm: ");
 		qrCodeLabel = new JLabel("Ma QR: ");
 		qrCodedf = new JLabel("SOCT_SOOL_");
+		salePriceDiscountLabel = new JLabel("Gía Bán đã giảm");
+		customerNameLabel = new JLabel("Tên Khách Hàng: ");
+		customerPhoneLabel = new JLabel("Số Điện Thoại: ");
 		
 		storeAddressField = new JTextArea(3, 20);
 		outputVoucherIdField = new JTextField(20);
@@ -106,6 +115,9 @@ public class FormPanel extends JPanel{
 		productNameField = new JTextField(20);
 		salePriceField = new JTextField(20);
 		qrCodeField = new JTextField(10);
+		salePriceDiscountField = new JTextField(20);
+		customerNameField = new JTextField(20);
+		customerPhoneField = new JTextField(20);
 		
 		luuBtn = new JButton("Luu");
 		inBtn = new JButton("IN");
@@ -115,8 +127,8 @@ public class FormPanel extends JPanel{
 		moneyCardCheck = new JCheckBox();
 		
 		productNameList = new JList<>();
-		model = new DefaultListModel<>();
-		productNameList.setModel(model);
+		modelList = new DefaultListModel<>();
+		productNameList.setModel(modelList);
 		productNameList.setPreferredSize(new Dimension(200, 60));
 		productNameList.setBorder(BorderFactory.createEtchedBorder());
 		productNameList.setSelectedIndex(0);
@@ -132,10 +144,11 @@ public class FormPanel extends JPanel{
 			String outputVoucherId = outputVoucherIdField.getText();
 			String outputDate = outputDateField.getText();
 			String outputUser = outputUserField.getText();
-			String qrcode = outputVoucherIdField.getText()+ "_SOOL_" + qrCodeField.getText();
 			String totalDiscount = "";
 			String giftdiscount = "";
 			String moneyCard = "";
+			String barcode = outputVoucherId;
+			String qrcode = outputVoucherIdField.getText()+ "_SOOL_" + qrCodeField.getText();
 			
 			if(totalDiscountCheck.isSelected()) {
 				totalDiscount = totalDiscountField.getText();
@@ -146,36 +159,46 @@ public class FormPanel extends JPanel{
 			if(moneyCardCheck.isSelected()) {
 				moneyCard = moneyCardField.getText();
 			}
-			
 			String productName = productNameField.getText();
-			String quantity = quantityField.getText();
-			String salePrice = salePriceField.getText();
-			if(!productName.equals("")) {
-				model.addElement(productName);
-				products.add(new Product(productName, processNumberFormatException(quantity), processNumberFormatException(salePrice)));
+			String quantityStr = quantityField.getText();
+			String salePriceStr = salePriceField.getText();
+			String salePriceDiscountStr = salePriceDiscountField.getText();
+			
+			int quantity = processNumberFormatException(quantityStr);
+			int salePrice = processNumberFormatException(salePriceStr);
+			int salePriceDiscount = 0;
+			if(!salePriceDiscountStr.equals("")) {
+				salePriceDiscount = processNumberFormatException(salePriceDiscountStr);
+			} else {
+				salePriceDiscount = salePrice;
 			}
 			
+			if(!productName.equals("") && quantity != 0 && salePrice != 0) {
+				modelList.addElement(productName);
+				products.add(new Product(productName, quantity, salePrice, salePriceDiscount));
+			}
 			Bill bill = new Bill(
 					storeAddress, 
 					outputVoucherId, 
 					outputDate, 
 					outputUser,
+					products,
 					0, // totalamount
 					processNumberFormatException(totalDiscount), 
 					processNumberFormatException(giftdiscount),
 					processNumberFormatException(moneyCard), 
-					"", // barcode base64
-					qrcode); // qrcode base64
-			bill.setProducts(products);
+					barcode, 
+					qrcode); 
 			
 			FormEvent formEvent = new FormEvent(this, bill);
 			if(formListener != null) {
 				formListener.formPerforment(formEvent);
 			}
+			
 			productNameField.setText("");
 			quantityField.setText("");
 			salePriceField.setText("");
-			
+			salePriceDiscountField.setText("");
 			
 		});
 		
@@ -301,7 +324,38 @@ public class FormPanel extends JPanel{
 		add(outputUserField, gc);
 		
 		// Row 5
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(customerNameLabel, gc);
 		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(customerNameField, gc);
+		
+		// Row 6
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(customerPhoneLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(customerPhoneField, gc);
+		
+		// Row 5
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -320,7 +374,9 @@ public class FormPanel extends JPanel{
 		jPanel.add(qrCodeField);
 		add(jPanel, gc);
 		
-		// Row 5
+	
+		
+		// Row 6
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -336,7 +392,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(productNameField, gc);
 		
-		// Row 6
+		// Row 7
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -352,7 +408,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(quantityField, gc);
 		
-		// Row 7
+		// Row 8
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -368,7 +424,23 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(salePriceField, gc);
 		
-		// Row 8
+		// row 9
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(salePriceDiscountLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		add(salePriceDiscountField, gc);
+		
+		// Row 10
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -384,7 +456,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(new JScrollPane(productNameList), gc);
 		
-		// Row 9
+		// Row 11
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -407,7 +479,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(totalDiscountField, gc);
 		
-		// Row 10
+		// Row 12
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -430,7 +502,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(totalGiftVoucherField, gc);
 		
-		// Row 11
+		// Row 13
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
@@ -453,7 +525,7 @@ public class FormPanel extends JPanel{
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(moneyCardField, gc);
 		
-		// Row 12
+		// Row 14
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;

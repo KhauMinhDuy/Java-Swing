@@ -5,15 +5,17 @@ public class Product {
 	private String productName;
 	private int quantity;
 	private int salePriceVAT;
+	private int salePriceAfterDiscount;
 	private int totalAmountVAT;
 
 	public Product() {
 	}
 
-	public Product(String productName, int quantity, int salePriceVAT) {
+	public Product(String productName, int quantity, int salePriceVAT, int salePriceAfterDiscount) {
 		this.productName = productName;
 		this.quantity = quantity;
 		this.salePriceVAT = salePriceVAT;
+		this.salePriceAfterDiscount = salePriceAfterDiscount;
 	}
 
 	public String getProductName() {
@@ -41,7 +43,19 @@ public class Product {
 	}
 
 	public int getTotalAmountVAT() {
-		return quantity * salePriceVAT;
+		return quantity * salePriceAfterDiscount;
+	}
+
+	public int getSalePriceAfterDiscount() {
+		return salePriceAfterDiscount;
+	}
+
+	public void setSalePriceAfterDiscount(int salePriceAfterDiscount) {
+		this.salePriceAfterDiscount = salePriceAfterDiscount;
+	}
+
+	public void setTotalAmountVAT(int totalAmountVAT) {
+		this.totalAmountVAT = totalAmountVAT;
 	}
 
 }

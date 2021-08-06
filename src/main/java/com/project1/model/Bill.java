@@ -12,13 +12,18 @@ public class Bill {
 	private String outputDATE;
 	private String outputUSER;
 	private int totalAmount;
-	private int totalDiscount ;
+	private int totalDiscount;
+	private int totalVoucherDiscount;
 	private int totalGiftVoucherAmount;
 	private int moneyCard;
 	private int totalAmountRound;
+	private int refundMoney;
+	private int cashVND;
 	private String barcode;
 	private String qrCode;
 	private String specialMessage;
+
+	private Customer customer;
 
 	private List<Product> products;
 
@@ -26,11 +31,10 @@ public class Bill {
 		this.companyName = "BÁCH HÓA XANH";
 		this.website = "www.bachhoaxanh.com";
 		this.storeAddress = "";
-		this.specialMessage = 
-				"Tổng đài góp ý/khiếu nại:1800 1067.         \n"
+		this.specialMessage = "Tổng đài góp ý/khiếu nại:1800 1067.\n"
 				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
 				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
-				+ "VAT tại trang web https://hddt.bachhoaxanh.com. \n"
+				+ "VAT tại trang web https://hddt.bachhoaxanh.com.\n"
 				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
 				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.";
 		this.barcode = "";
@@ -38,17 +42,20 @@ public class Bill {
 		this.outputVoucherID = "";
 		this.outputDATE = "";
 		this.outputUSER = "";
+
+		this.cashVND = 0;
 		this.products = Collections.emptyList();
 	}
 
 	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER,
-			int totalAmount, int totalDiscount, int totalGiftVoucherAmount, int moneyCard,
+			List<Product> products, int totalAmount, int totalDiscount, int totalGiftVoucherAmount, int moneyCard,
 			String barcode, String qrcode) {
 		this();
 		this.storeAddress = storeAddress;
 		this.outputVoucherID = outputVoucherID;
 		this.outputDATE = outputDATE;
 		this.outputUSER = outputUSER;
+		this.products = products;
 		this.totalAmount = totalAmount;
 		this.totalDiscount = totalDiscount;
 		this.totalGiftVoucherAmount = totalGiftVoucherAmount;
@@ -56,7 +63,7 @@ public class Bill {
 		this.barcode = barcode;
 		this.qrCode = qrcode;
 	}
-	
+
 	public String getCompanyName() {
 		return companyName;
 	}
@@ -178,6 +185,38 @@ public class Bill {
 
 	public void setSpecialMessage(String specialMessage) {
 		this.specialMessage = specialMessage;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public int getRefundMoney() {
+		return refundMoney;
+	}
+
+	public void setRefundMoney(int refundMoney) {
+		this.refundMoney = refundMoney;
+	}
+
+	public int getCashVND() {
+		return cashVND;
+	}
+
+	public void setCashVND(int cashVND) {
+		this.cashVND = cashVND;
+	}
+
+	public int getTotalVoucherDiscount() {
+		return totalVoucherDiscount;
+	}
+
+	public void setTotalVoucherDiscount(int totalVoucherDiscount) {
+		this.totalVoucherDiscount = totalVoucherDiscount;
 	}
 
 }

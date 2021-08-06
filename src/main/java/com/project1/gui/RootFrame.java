@@ -3,6 +3,7 @@ package com.project1.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -27,6 +28,7 @@ import com.project1.util.Utils;
 public class RootFrame extends JFrame{
 
 	private static final String PATH_FILE = "src\\main\\java\\com\\project1\\template.html";
+	private static final String PATH_FILE_NO_QR = "src\\main\\java\\com\\project1\\template_no_qr.html";
 
 	private static final long serialVersionUID = 1L;
 	
@@ -54,21 +56,21 @@ public class RootFrame extends JFrame{
 		
 		formPanel.addFormPerforment(event -> {
 			try {
-				List<Product> products = event.getProducts();
 				Bill bill = new Bill(
 						event.getStoreAddress(), 
 						event.getOutputVoucherID(), 
 						event.getOutputDATE(), 
 						event.getOutputUSER(),
+						event.getProducts(),
 						event.getTotalAmount(), 
 						event.getTotalDiscount(), 
 						event.getTotalGiftVoucherAmount(), 
 						event.getMoneyCard(),
 						Utils.generateBarcode128(event.getOutputVoucherID()),
-						Utils.generateQRCodeImage(event.getQRCode()));
-				bill.setProducts(products);
+						Utils.generateQRCodeImage(event.getQRCode())
+					);
 				
-				html = readFiletemplate(PATH_FILE);
+				html = readFiletemplate(PATH_FILE_NO_QR);
 				html = replaceStr(html, bill);
 				writeTemplate("src\\main\\resources\\pdf.html", html);
 			} catch (Exception e1) {
@@ -87,7 +89,7 @@ public class RootFrame extends JFrame{
 		
 		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.PAGE_AXIS));
 		
-		html = readFiletemplate(PATH_FILE);
+		html = readFiletemplate(PATH_FILE_NO_QR);
 		html  = replaceStr(html, new Bill());
 		jEditorPane.setEditable(false);
 		jEditorPane.setContentType("text/html");
@@ -118,44 +120,69 @@ public class RootFrame extends JFrame{
 	private void writeTemplate(String path, String html) throws IOException {
 		Files.write(Paths.get(path), html.getBytes());
 	}
+	public static byte[] writeTemplate(String html) throws IOException {
+		return html.getBytes(Charset.forName("UTF-8"));
+	}
 	
 	private static String formatCurrency(int money) {
-		String s = String.valueOf(money);
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        return formatter.format(Double.parseDouble(s));
+        return formatter.format(Double.parseDouble(String.valueOf(money)));
     }
 	
 	private String replaceStr(String html, Bill bill) {
 		org.jsoup.nodes.Document doc = Jsoup.parse(html);
 		
-		Element productName = doc.getElementById("productname");
-		Element productDetail = doc.getElementById("productdetail");
+		Element productName = doc.getElementsByClass("productname").first();
+		Element productDetail = doc.getElementsByClass("productdetail").first();
 		
 		for(int i = 0; i < bill.getProducts().size(); i++) {
+			
 			Element proNameClone = productName.clone();
 			Element proDetailClone = productDetail.clone();
+			
 			Product product = bill.getProducts().get(i);
 			
-			for(Element e :  productName.children()) {
-				switch(e.text()) {
-				case "PRODUCTNAME":
+			
+			for (Element e : productName.children()) {
+				if (e.text().equals("PRODUCTNAME")) {
 					e.text(String.valueOf(product.getProductName()));
-					break;
-				
+				}
 			}
+
 			for (Element detail : productDetail.children()) {
+				
 				switch (detail.text()) {
 				case "QUANTITY":
 					detail.text(formatCurrency(product.getQuantity()));
 					break;
-				case "SALEPRICE":
-					detail.text(formatCurrency(product.getSalePriceVAT()));
-					break;
 				case "TOTALAMOUNTVAT":
 					detail.text(formatCurrency(product.getTotalAmountVAT()));
 					break;
+				default:
+					Elements children = detail.children();
+					for(Element span : children) {
+						if (product.getSalePriceVAT() == product.getSalePriceAfterDiscount()) {
+							switch (span.text()) {
+							case "SALEPRICEVAT":
+								span.text("");
+								break;
+							case "AFTERDISCOUNT":
+								span.text(formatCurrency(product.getSalePriceAfterDiscount()));
+								break;
+							}
+						} else {
+							switch (span.text()) {
+							case "SALEPRICEVAT":
+								span.text(formatCurrency(product.getSalePriceVAT()));
+								break;
+							case "AFTERDISCOUNT":
+								span.text(formatCurrency(product.getSalePriceAfterDiscount()));
+								break;
+							}
+						}
+					}
 				}
-			}
+				
 			}
 			
 			if(i == bill.getProducts().size() - 1) break;
@@ -166,59 +193,75 @@ public class RootFrame extends JFrame{
 		}
 		
 		Elements elements = doc.body().getElementsByTag("td");
-		for(Element element : elements) {
-			switch(element.text()) {
+		
+		
+		for(Element td : elements) {
+			switch(td.text()) {
 			case "COMPANYNAME":
-				element.text(bill.getCompanyName());
+				td.text(bill.getCompanyName());
 				break;
 			case "WEBSITE":
-				element.text(bill.getWebsite());
+				td.text(bill.getWebsite());
 				break;
 			case "STOREADDRESS":
-				element.text(bill.getStoreAddress());
+				td.text(bill.getStoreAddress());
 				break;
 			case "OUTPUTVOUCHERID":
-				element.text(bill.getOutputVoucherID());
+				td.text(bill.getOutputVoucherID());
 				break;
 			case "OUTPUTDATE":
-				element.text(bill.getOutputDATE());
+				td.text(bill.getOutputDATE());
 				break;
 			case "OUTPUTUSER":
-				element.text(bill.getOutputUSER());
+				td.text(bill.getOutputUSER());
+				break;
+			case "CUSTOMERNAME":
+				td.parent().remove();
+				break;
+			case "CUSTOMERPHONE":
+				td.parent().remove();
 				break;
 			case "TOTALAMOUNT":
-				element.text(formatCurrency(bill.getTotalAmount()));
+				td.text(formatCurrency(bill.getTotalAmount()));
 				break;
 			case "TOTALDISCOUNT":
 				if(bill.getTotalDiscount() != 0) {
-					element.text(formatCurrency(bill.getTotalDiscount()));
+					td.text(formatCurrency(bill.getTotalDiscount()));
 				} else {
-					element.parent().remove();
+					td.parent().remove();
 				}
 				break;
-			
+			case "TOTALVOUCHERDISCOUNT":
+				td.parent().remove();
+				break;
 			case "TOTALGIFTVOUCHERAMOUNT":
 				if(bill.getTotalGiftVoucherAmount() != 0) {
-					element.text(formatCurrency(bill.getTotalGiftVoucherAmount()));
+					td.text(formatCurrency(bill.getTotalGiftVoucherAmount()));
 				} else {
-					element.parent().remove();
+					td.parent().remove();
 				}
 				break;
 			case "MONEYCARD":
 				if(bill.getMoneyCard() != 0) {
-					element.text(formatCurrency(bill.getMoneyCard()));
+					td.text(formatCurrency(bill.getMoneyCard()));
 				} else {
-					element.parent().remove();
+					td.parent().remove();
 				}
 				break;
+			case "CASHVND":
+				td.parent().remove();
+				break;
 			case "TOTALAMOUNTROUND":
-				element.text(formatCurrency(bill.getTotalAmountRound()));
+				td.text(formatCurrency(bill.getTotalAmountRound()));
+				break;
+			case "REFUNDMONEY":
+				td.parent().remove();
 				break;
 			case "SPECIALMESSAGE":
-				element.text(bill.getSpecialMessage());
+				td.text(bill.getSpecialMessage());
 				break;
 			case "":
-				element.childNodes().forEach(e -> {
+				td.childNodes().forEach(e -> {
 					String attr = e.attr("src");
 					if(attr.contains("IMAGEQRCODEBASE64")) {
 						attr = attr.replace("IMAGEQRCODEBASE64", bill.getQrCode());
