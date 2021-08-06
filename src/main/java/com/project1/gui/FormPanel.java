@@ -1,6 +1,7 @@
 package com.project1.gui;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -44,6 +45,8 @@ public class FormPanel extends JPanel{
 	private JLabel productNameLabel;
 	private JLabel salePriceLabel;
 	private JLabel productNameListLabel;
+	private JLabel qrCodeLabel;
+	private JLabel qrCodedf;
 	
 	private JTextArea storeAddressField;
 	private JTextField outputVoucherIdField;
@@ -55,6 +58,7 @@ public class FormPanel extends JPanel{
 	private JTextField quantityField;
 	private JTextField productNameField;
 	private JTextField salePriceField;
+	private JTextField qrCodeField;
 	
 	private JButton luuBtn;
 	private JButton inBtn;
@@ -88,6 +92,8 @@ public class FormPanel extends JPanel{
 		productNameLabel = new JLabel("Tên Sản Phẩm: ");
 		salePriceLabel = new JLabel("Giá Bán: ");
 		productNameListLabel = new JLabel("Danh Sách Sản Phẩm: ");
+		qrCodeLabel = new JLabel("Ma QR: ");
+		qrCodedf = new JLabel("SOCT_SOOL_");
 		
 		storeAddressField = new JTextArea(3, 20);
 		outputVoucherIdField = new JTextField(20);
@@ -99,6 +105,7 @@ public class FormPanel extends JPanel{
 		quantityField = new JTextField(20);
 		productNameField = new JTextField(20);
 		salePriceField = new JTextField(20);
+		qrCodeField = new JTextField(10);
 		
 		luuBtn = new JButton("Luu");
 		inBtn = new JButton("IN");
@@ -125,6 +132,7 @@ public class FormPanel extends JPanel{
 			String outputVoucherId = outputVoucherIdField.getText();
 			String outputDate = outputDateField.getText();
 			String outputUser = outputUserField.getText();
+			String qrcode = outputVoucherIdField.getText()+ "_SOOL_" + qrCodeField.getText();
 			String totalDiscount = "";
 			String giftdiscount = "";
 			String moneyCard = "";
@@ -157,10 +165,8 @@ public class FormPanel extends JPanel{
 					processNumberFormatException(giftdiscount),
 					processNumberFormatException(moneyCard), 
 					"", // barcode base64
-					""); // qrcode base64
+					qrcode); // qrcode base64
 			bill.setProducts(products);
-			
-			
 			
 			FormEvent formEvent = new FormEvent(this, bill);
 			if(formListener != null) {
@@ -293,6 +299,26 @@ public class FormPanel extends JPanel{
 		gc.anchor = GridBagConstraints.LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(outputUserField, gc);
+		
+		// Row 5
+		
+		gc.gridy++;
+		gc.gridx = 0;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0, 0, 0, 5);
+		add(qrCodeLabel, gc);
+		
+		gc.gridx = 1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.anchor = GridBagConstraints.LINE_START;
+		gc.insets = new Insets(0, 0, 0, 0);
+		JPanel jPanel = new JPanel(new FlowLayout());
+		jPanel.add(qrCodedf);
+		jPanel.add(qrCodeField);
+		add(jPanel, gc);
 		
 		// Row 5
 		gc.gridy++;

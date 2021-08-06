@@ -1,5 +1,6 @@
 package com.project1.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Bill {
@@ -36,6 +37,7 @@ public class Bill {
 		this.outputVoucherID = "";
 		this.outputDATE = "";
 		this.outputUSER = "";
+		this.products = Collections.emptyList();
 	}
 
 	public Bill(String storeAddress, String outputVoucherID, String outputDATE, String outputUSER,

@@ -65,7 +65,7 @@ public class RootFrame extends JFrame{
 						event.getTotalGiftVoucherAmount(), 
 						event.getMoneyCard(),
 						Utils.generateBarcode128(event.getOutputVoucherID()),
-						Utils.generateQRCodeImage(event.getOutputVoucherID()+"_SOOL_"+45748660));
+						Utils.generateQRCodeImage(event.getQRCode()));
 				bill.setProducts(products);
 				
 				html = readFiletemplate(PATH_FILE);
@@ -98,7 +98,7 @@ public class RootFrame extends JFrame{
 		add(displayPanel, BorderLayout.CENTER);
 		add(formPanel, BorderLayout.WEST);
 		
-		setMinimumSize(new Dimension(1200, 1000));
+		setMinimumSize(new Dimension(1100, 1000));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		pack();
@@ -128,12 +128,26 @@ public class RootFrame extends JFrame{
 	private String replaceStr(String html, Bill bill) {
 		org.jsoup.nodes.Document doc = Jsoup.parse(html);
 		
-		Elements select = doc.select("tr");
-		for(Element e : select) {
-			System.out.println(e);
-			
-		}
+		Element productName = doc.getElementById("productname");
+		Element productDetail = doc.getElementById("productdetail");
 		
+		for(int i = 0; i < bill.getProducts().size(); i++) {
+			Element proNameClone = productName.clone();
+			Element proDetailClone = productDetail.clone();
+			Product product = bill.getProducts().get(i);
+			productName.child(0).text(product.getProductName());
+			productDetail.child(0).text(String.valueOf(product.getQuantity()));
+			productDetail.child(0).addClass("text-center");
+			productDetail.child(1).text(formatCurrency(product.getSalePriceVAT()));
+			productDetail.child(1).addClass("text-right");
+			productDetail.child(2).text(formatCurrency(product.getTotalAmountVAT()));
+			productDetail.child(2).addClass("text-right");
+			if(i == bill.getProducts().size() - 1) break;
+			productDetail.after(proNameClone);
+			productName = proNameClone;
+			productName.after(proDetailClone);
+			productDetail = proDetailClone;
+		}
 		
 		Elements elements = doc.body().getElementsByTag("td");
 		for(Element element : elements) {
@@ -156,7 +170,6 @@ public class RootFrame extends JFrame{
 			case "OUTPUTUSER":
 				element.text(bill.getOutputUSER());
 				break;
-
 			case "TOTALAMOUNT":
 				element.text(formatCurrency(bill.getTotalAmount()));
 				break;

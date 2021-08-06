@@ -54,5 +54,9 @@ public class FormEvent extends EventObject {
 		return bill.getTotalAmount();
 	}
 	
+	public String getQRCode() {
+		return bill.getQrCode();
+	}
+	
 
 }
