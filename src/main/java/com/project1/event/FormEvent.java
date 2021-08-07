@@ -11,11 +11,18 @@ public class FormEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private Bill bill;
+	
+	private String html;
 
 	public FormEvent(Object source, Bill bill) {
 		super(source);
 
 		this.bill = bill;
+	}
+	
+	public FormEvent(Object source, String html) {
+		super(source);
+		this.html = html;
 	}
 
 	public String getStoreAddress() {
@@ -64,6 +71,14 @@ public class FormEvent extends EventObject {
 	
 	public String getCustomerPhone() {
 		return bill.getCustomer().getCustomerPhone();
+	}
+	
+	public String getHtml() {
+		return html;
+	}
+	
+	public void setHtml(String html) {
+		this.html = html;
 	}
 	
 }

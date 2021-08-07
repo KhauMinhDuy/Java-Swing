@@ -16,6 +16,7 @@ public class HtmlToPdf {
 		File pdfDest = new File(pdf);
 		
 		ConverterProperties converterProperties = new ConverterProperties();
-		HtmlConverter.convertToPdf(new FileInputStream(htmlSource), new FileOutputStream(pdfDest), converterProperties);
+//		HtmlConverter.convertToPdf(new FileInputStream(htmlSource), new FileOutputStream(pdfDest), converterProperties);
+		HtmlConverter.convertToPdf(html,  new FileOutputStream(pdfDest), converterProperties);
 	}
 }

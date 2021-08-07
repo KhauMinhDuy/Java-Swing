@@ -24,6 +24,7 @@ import com.itextpdf.text.DocumentException;
 import com.project1.model.Bill;
 import com.project1.model.Customer;
 import com.project1.model.Product;
+import com.project1.util.HtmlToPdf;
 import com.project1.util.Utils;
 
 public class RootFrame extends JFrame {
@@ -73,14 +74,16 @@ public class RootFrame extends JFrame {
 
 				html = readFiletemplate(PATH_FILE_NO_QR);
 				html = replaceStr(html, bill);
-				writeTemplate("src\\main\\resources\\pdf.html", html);
+//				writeTemplate("src\\main\\resources\\pdf.html", html);
+				
 
 				Document doc = jEditorPane.getDocument();
 				doc.putProperty(Document.StreamDescriptionProperty, null);
 
 				jEditorPane.setContentType("text/html");
 				jEditorPane.setText(html);
-
+				event.setHtml(html);
+//				HtmlToPdf.convert(html, "src\\main\\resources\\bill.pdf");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

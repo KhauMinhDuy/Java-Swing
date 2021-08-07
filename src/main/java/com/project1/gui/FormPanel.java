@@ -81,6 +81,8 @@ public class FormPanel extends JPanel{
 	
 	private FormListener formListener;
 	
+	private String html;
+	
 	public FormPanel() {
 		setControl();
 		setEvent();
@@ -212,12 +214,19 @@ public class FormPanel extends JPanel{
 		
 		inBtn.addActionListener(event -> {
 			try {
-				HtmlToPdf.convert("src\\main\\resources\\pdf.html",
-						"src\\main\\resources\\bill.pdf");
+				String html = "";
+				FormEvent formEvent = new FormEvent(this, html);
+				if(formListener != null) {
+					formListener.formPerforment(formEvent);
+				}
+				System.out.println(html);
+				HtmlToPdf.convert(html, "src\\main\\resources\\bill.pdf");
 				JOptionPane.showMessageDialog(this, "In Hoa Don Thanh Cong (src\\main\\resources\\bill.pdf)");
 			} catch (DocumentException | IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		});
 		
 		totalDiscountCheck.addActionListener(event -> {
