@@ -3,7 +3,6 @@ package com.project1.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -20,11 +19,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.itextpdf.html2pdf.html.HtmlUtils;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.tool.xml.html.HTMLUtils;
 import com.project1.model.Bill;
 import com.project1.model.Customer;
 import com.project1.model.Product;
-import com.project1.util.HtmlToPdf;
 import com.project1.util.Utils;
 
 public class RootFrame extends JFrame {
@@ -74,15 +74,14 @@ public class RootFrame extends JFrame {
 
 				html = readFiletemplate(PATH_FILE_NO_QR);
 				html = replaceStr(html, bill);
-//				writeTemplate("src\\main\\resources\\pdf.html", html);
 				
-
 				Document doc = jEditorPane.getDocument();
 				doc.putProperty(Document.StreamDescriptionProperty, null);
 
 				jEditorPane.setContentType("text/html");
 				jEditorPane.setText(html);
-				HtmlToPdf.convert(html, "src\\main\\resources\\bill.pdf");
+				
+				writeTemplate("src\\main\\resources\\pdf.html", html);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -126,10 +125,6 @@ public class RootFrame extends JFrame {
 		Files.write(Paths.get(path), html.getBytes());
 	}
 
-	public static byte[] writeTemplate(String html) throws IOException {
-		return html.getBytes(Charset.forName("UTF-8"));
-	}
-
 	private static String formatCurrency(int money) {
 		DecimalFormat formatter = new DecimalFormat("###,###,###");
 		return formatter.format(Double.parseDouble(String.valueOf(money)));
@@ -150,7 +145,7 @@ public class RootFrame extends JFrame {
 
 			for (Element e : productName.children()) {
 				if (e.text().equals("PRODUCTNAME")) {
-					e.text(String.valueOf(product.getProductName()));
+					e.text(product.getProductName());
 				}
 			}
 
@@ -164,8 +159,8 @@ public class RootFrame extends JFrame {
 					detail.text(formatCurrency(product.getTotalAmountVAT()));
 					break;
 				default:
-					Elements children = detail.children();
-					for (Element span : children) {
+					Elements spanChildren = detail.children();
+					for (Element span : spanChildren) {
 						if (product.getSalePriceVAT() == product.getSalePriceAfterDiscount()) {
 							switch (span.text()) {
 							case "SALEPRICEVAT":
@@ -190,8 +185,7 @@ public class RootFrame extends JFrame {
 
 			}
 
-			if (i == bill.getProducts().size() - 1)
-				break;
+			if (i == bill.getProducts().size() - 1) break;
 			productDetail.after(proNameClone);
 			productName = proNameClone;
 			productName.after(proDetailClone);
@@ -221,10 +215,18 @@ public class RootFrame extends JFrame {
 				td.text(bill.getOutputUSER());
 				break;
 			case "CUSTOMERNAME":
-				td.parent().remove();
+				if(!bill.getCustomer().getCustomerName().equals("")) {
+					td.text(bill.getCustomer().getCustomerName());
+				} else {
+					td.parent().remove();
+				}
 				break;
 			case "CUSTOMERPHONE":
-				td.parent().remove();
+				if(!bill.getCustomer().getCustomerPhone().equals("")) {
+					td.text(bill.getCustomer().getCustomerPhone());
+				} else {
+					td.parent().remove();
+				}
 				break;
 			case "TOTALAMOUNT":
 				td.text(formatCurrency(bill.getTotalAmount()));
@@ -259,11 +261,17 @@ public class RootFrame extends JFrame {
 			case "TOTALAMOUNTROUND":
 				td.text(formatCurrency(bill.getTotalAmountRound()));
 				break;
+			case "SHIPPRICE":
+				td.parent().remove();
+				break;
+			case "CUSTOMERPRICE":
+				td.parent().remove();
+				break;
 			case "REFUNDMONEY":
 				td.parent().remove();
 				break;
 			case "SPECIALMESSAGE":
-				td.text(bill.getSpecialMessage());
+				td.html(bill.getSpecialMessage());
 				break;
 			case "":
 				td.childNodes().forEach(e -> {
@@ -277,9 +285,7 @@ public class RootFrame extends JFrame {
 					}
 				});
 				break;
-
 			}
-
 		}
 		return doc.toString();
 	}

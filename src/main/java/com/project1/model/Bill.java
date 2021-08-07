@@ -31,12 +31,13 @@ public class Bill {
 		this.companyName = "BÁCH HÓA XANH";
 		this.website = "www.bachhoaxanh.com";
 		this.storeAddress = "";
-		this.specialMessage = "Tổng đài góp ý/khiếu nại:1800 1067.<br>"
-				+ "Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòng"
-				+ "liên hệ thu ngân để được hỗ trợ. Quý khách có thể in bản sao hóa đơn"
-				+ "VAT tại trang web https://hddt.bachhoaxanh.com.<br>"
-				+ "Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yết"
-				+ "tại cửa hàng BHX. Xin cảm ơn quý khách. Hẹn gặp lại.";
+		this.specialMessage = 
+				"<span>Tổng đài góp ý/khiếu nại:1800 1067. </span><br>"
+				+ "<p style=\"text-align: center;\">Lưu ý: Bách Hóa Xanh chỉ xuất hóa đơn trong ngày, Quý khách vui lòngliên hệ thu"
+				+ "ngân để được hỗ trợ.Quý khách có thể in bản sao hóa đơn VAT (không bao gồm phí giao hàng) tại trang web"
+				+ "https://hddt.bachhoaxanh.com.</p>"
+				+ "<span style=\"text-align: center\"> Quý khách vui lòng xem chi tiết Chính Sách đổi-trả hàng được niêm yếttại cửa hàng BHX. Xin cảm ơn quý"
+				+ "khách. Hẹn gặp lại.</span>";
 		this.barcode = "";
 		this.qrCode = "";
 		this.outputVoucherID = "";

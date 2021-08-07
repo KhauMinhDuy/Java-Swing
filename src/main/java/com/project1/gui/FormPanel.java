@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +15,20 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import com.itextpdf.text.DocumentException;
 import com.project1.event.FormEvent;
 import com.project1.event.FormListener;
 import com.project1.model.Bill;
 import com.project1.model.Customer;
 import com.project1.model.Product;
+import com.project1.util.HtmlToPdf;
 
 
 public class FormPanel extends JPanel{
@@ -209,7 +213,12 @@ public class FormPanel extends JPanel{
 		});
 		
 		inBtn.addActionListener(event -> {
-			
+			try {
+				HtmlToPdf.convert("src\\main\\resources\\pdf.html", "src\\main\\resources\\bill.pdf");
+				JOptionPane.showMessageDialog(this, "Luu Thanh Cong");
+			} catch (DocumentException | IOException e) {
+				e.printStackTrace();
+			}
 			
 		});
 		

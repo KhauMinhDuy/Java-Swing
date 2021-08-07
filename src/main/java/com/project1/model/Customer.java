@@ -6,11 +6,11 @@ public class Customer {
 	private String customerPhone;
 
 	public Customer() {
-		super();
+		customerName = "";
+		customerPhone = "";
 	}
 
 	public Customer(String customerName, String customerPhone) {
-		super();
 		this.customerName = customerName;
 		this.customerPhone = customerPhone;
 	}
