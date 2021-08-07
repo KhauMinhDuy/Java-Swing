@@ -82,8 +82,7 @@ public class RootFrame extends JFrame {
 
 				jEditorPane.setContentType("text/html");
 				jEditorPane.setText(html);
-				event.setHtml(html);
-//				HtmlToPdf.convert(html, "src\\main\\resources\\bill.pdf");
+				HtmlToPdf.convert(html, "src\\main\\resources\\bill.pdf");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
