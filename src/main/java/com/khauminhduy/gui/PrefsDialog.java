@@ -1,16 +1,23 @@
 package com.khauminhduy.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.Border;
 
 import com.khauminhduy.event.PrefsListener;
 
@@ -32,9 +39,11 @@ public class PrefsDialog extends JDialog {
 	private JSpinner portSpinner;
 	private SpinnerNumberModel spinnerNumberModel;
 	
+	private JPanel controlPanel;
+	private JPanel buttonPanel;
+	
 	private PrefsListener prefsListener;
-	
-	
+
 	public PrefsDialog(JFrame parent) {
 		super(parent, "Preferences", false);
 		setControl();
@@ -73,7 +82,28 @@ public class PrefsDialog extends JDialog {
 	}
 	
 	private void setProperties(JFrame parent) {
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
+		layoutControl();
+		add(controlPanel, BorderLayout.CENTER);
+		add(buttonPanel, BorderLayout.SOUTH);
+		
+		setSize(400, 300);	
+		setLocationRelativeTo(parent);
+	}
+
+	private void layoutControl() {
+		
+		controlPanel = new JPanel();
+		buttonPanel = new JPanel();
+		
+		Border emptyBorder = BorderFactory.createEmptyBorder(15, 15, 15, 15);
+		Border titleBorder = BorderFactory.createTitledBorder("Database Connect");
+		controlPanel.setBorder(BorderFactory.createCompoundBorder(emptyBorder, titleBorder));
+		
+		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
+		controlPanel.setLayout(new GridBagLayout());
+		
 		GridBagConstraints gc = new GridBagConstraints();
 		
 		// Row 1
@@ -81,14 +111,15 @@ public class PrefsDialog extends JDialog {
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.LINE_END;
-		add(userLabel, gc);
+		controlPanel.add(userLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 1;
 		gc.anchor = GridBagConstraints.LINE_START;
-		add(userField, gc);
+		controlPanel.add(userField, gc);
 		
 		// Row 2
 		gc.gridy++;
@@ -96,45 +127,36 @@ public class PrefsDialog extends JDialog {
 		gc.weightx = 1;
 		gc.weighty = 1;
 		gc.anchor = GridBagConstraints.LINE_END;
-		add(passLabel, gc);
+		controlPanel.add(passLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 1;
 		gc.anchor = GridBagConstraints.LINE_START;
-		add(passField, gc);
+		controlPanel.add(passField, gc);
 		
 		// Row 3
 		gc.gridy++;
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.LINE_END;
-		add(portLabel, gc);
+		controlPanel.add(portLabel, gc);
 		
 		gc.gridx = 1;
 		gc.weightx = 1;
 		gc.weighty = 1;
 		gc.anchor = GridBagConstraints.LINE_START;
-		add(portSpinner, gc);
+		controlPanel.add(portSpinner, gc);
+		
+		Dimension cancelSize = cancelButton.getPreferredSize();
+		okButton.setPreferredSize(cancelSize);
 		
 		// Row 4
-		gc.gridy++;
-		gc.gridx = 0;
-		gc.weightx = 1;
-		gc.weighty = 10;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
-		add(okButton, gc);
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		buttonPanel.add(okButton);
+		buttonPanel.add(cancelButton);
 		
-		gc.gridx = 1;
-		gc.weightx = 1;
-		gc.weighty = 10;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
-		add(cancelButton, gc);
-		
-		setSize(400, 300);	
-		setLocationRelativeTo(parent);
 	}
 
 	public void setPreferences(PrefsListener prefsListener) {
