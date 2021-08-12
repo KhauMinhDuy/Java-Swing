@@ -1,18 +1,14 @@
 package com.khauminhduy.db;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.khauminhduy.model.Person;
@@ -30,7 +26,7 @@ public class Database {
 	}
 
 	public List<Person> getPersons() {
-		return persons;
+		return Collections.unmodifiableList(persons);
 	}
 	
 	public void saveToFile(File file) throws IOException {
@@ -54,5 +50,9 @@ public class Database {
 			
 		}
 		
+	}
+
+	public void removePerson(int row) {
+		persons.remove(row);
 	}
 }

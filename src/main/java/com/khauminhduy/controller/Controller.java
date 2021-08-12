@@ -31,39 +31,39 @@ public class Controller {
 		AgeCategory ageCategory = null;
 		switch(ageCat) {
 		case "Under 18":
-			ageCategory = ageCategory.CHILD;
+			ageCategory = AgeCategory.CHILD;
 			break;
 		case "18 to 69":
-			ageCategory = ageCategory.ADULT;
+			ageCategory = AgeCategory.ADULT;
 			break;
 		case "69 or over":
-			ageCategory = ageCategory.SENIOR;
+			ageCategory = AgeCategory.SENIOR;
 			break;
 		}
 		
 		Employment employment = null;
 		switch(employee) {
 		case "employee":
-			employment = employment.EMPLOYEE;
+			employment = Employment.EMPLOYEE;
 			break;
 		case "self-employee":
-			employment = employment.SELFEMPLOYEE;
+			employment = Employment.SELFEMPLOYEE;
 			break;
 		case "unemployee":
-			employment = employment.UNEMPLOYEE;
+			employment = Employment.UNEMPLOYEE;
 			break;
 		case "other":
-			employment = employment.OTHER;
+			employment = Employment.OTHER;
 			break;
 		}
 		
 		Gender gender = null;
 		switch(genderstr) {
 		case "Male":
-			gender = gender.MALE;
+			gender = Gender.MALE;
 			break;
 		case "Female":
-			gender = gender.FEMALE;
+			gender = Gender.FEMALE;
 			break;
 		}
 		Person person = new Person(name, occupation, ageCategory, employment, taxId, usCitizen, gender);
@@ -82,4 +82,9 @@ public class Controller {
 	public void loadToFile(File file) throws ClassNotFoundException, IOException {
 		database.loadToFile(file);
 	}
+
+	public void removePerson(int row) {
+		database.removePerson(row);
+	}
+	
 }

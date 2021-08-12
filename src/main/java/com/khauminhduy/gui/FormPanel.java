@@ -205,7 +205,7 @@ public class FormPanel extends JPanel {
 		gc.weightx = 1;
 		gc.weighty = 0.1;
 		gc.anchor = GridBagConstraints.FIRST_LINE_END;
-		gc.insets = new Insets(0, 0, 0, 5);
+		gc.insets = new Insets(5, 0, 0, 5);
 		add(empLabel, gc);
 
 		gc.gridx = 1;

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -23,103 +24,96 @@ public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private TextPanel textPanel;
-	private ToolBar toolBar;
 	private FormPanel formPanel;
 	private TablePanel tablePanel;
-	
+
 	private JFileChooser fileChooser;
-	
+	private PrefsDialog prefsDialog;
+
 	private Controller controller;
+	
+	private JMenu fileMenu;
+	private JMenu windowMenu;
+	private JMenu showMenu;
+
+	private JMenuItem prefsItem;
+	private JMenuItem newWindowItem;
+	private JMenuItem newItem;
+	private JMenuItem exportDataItem;
+	private JMenuItem importDataItem;
+	private JMenuItem exitItem;
+
+	private JMenuBar menu;
+
+	private JCheckBoxMenuItem showFormCheckBox;
+	
+	private Preferences preferences;
 
 	public MainFrame() {
-		super("Hello World");
+		super("App");
 		setControl();
 		setEvent();
 		setProperties();
 	}
 
-	private void setProperties() {
-		setLayout(new BorderLayout());
-		add(toolBar, BorderLayout.NORTH);
-		add(tablePanel, BorderLayout.CENTER);
-		add(formPanel, BorderLayout.WEST);
+	private void setControl() {
 
-		setJMenuBar(createMenu());
-		setMinimumSize(new Dimension(Const.WIDTH, Const.HEIGHT));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setVisible(true);
+
+		formPanel = new FormPanel();
+
+		tablePanel = new TablePanel();
+
+		fileChooser = new JFileChooser();
+		fileChooser.addChoosableFileFilter(new FileExtenstions("txt"));
+		fileChooser.addChoosableFileFilter(new FileExtenstions("pdf"));
+
+		prefsDialog = new PrefsDialog(this);
+		
+		controller = new Controller();
+
+		tablePanel.setData(controller.getPersons());
+		
+		menu = new JMenuBar();
+		
+		fileMenu = new JMenu("File");
+		windowMenu = new JMenu("Window");
+		showMenu = new JMenu("Show");
+		
+		newItem = new JMenuItem("New File");
+		exportDataItem = new JMenuItem("Export Data");
+		importDataItem = new JMenuItem("Import Data");
+		exitItem = new JMenuItem("Exit");
+		newWindowItem = new JMenuItem("New Window");
+		prefsItem = new JMenuItem("Preferences...");
+		
+		showFormCheckBox = new JCheckBoxMenuItem("Show Form");
+		
+		preferences = Preferences.userRoot().node("db");
+		String username = preferences.get("username", "");
+		String password = preferences.get("password", "");
+		int port = preferences.getInt("port", 3306);
+		prefsDialog.setDefault(username, password, port);
 	}
 
 	private void setEvent() {
-		toolBar.setStringListener(text -> {
-			textPanel.append(text);
-		});
 
 		formPanel.addFormEventOccured(event -> {
 			controller.addPerson(event);
 			tablePanel.refresh();
 		});
-	}
-
-	private void setControl() {
-		textPanel = new TextPanel();
 		
-		toolBar = new ToolBar();
+		tablePanel.addPersonTableListener(row -> {
+			controller.removePerson(row);
+		});
 		
-		formPanel = new FormPanel();
-		
-		tablePanel = new TablePanel();
-		
-		fileChooser = new JFileChooser();
-		fileChooser.addChoosableFileFilter(new FileExtenstions("txt"));
-		fileChooser.addChoosableFileFilter(new FileExtenstions("pdf"));
-		
-		controller = new Controller();
-		
-		tablePanel.setData(controller.getPersons());
-		
-	}
-
-	private JMenuBar createMenu() {
-		JMenuBar menu = new JMenuBar();
-
-		JMenu fileMenu = new JMenu("File");
-		JMenuItem newItem = new JMenuItem("New File");
-		JMenuItem exportDataItem = new JMenuItem("Export Data");
-		JMenuItem importDataItem = new JMenuItem("Import Data");
-		JMenuItem exitItem = new JMenuItem("Exit");
-
-		fileMenu.add(newItem);
-		fileMenu.addSeparator();
-		fileMenu.add(exportDataItem);
-		fileMenu.add(importDataItem);
-		fileMenu.addSeparator();
-		fileMenu.add(exitItem);
-
-		JMenu windowMenu = new JMenu("Window");
-		JMenuItem newWindowItem = new JMenuItem("New Window");
-		windowMenu.add(newWindowItem);
-
-		JMenu showMenu = new JMenu("Show");
-		JCheckBoxMenuItem showFormCheckBox = new JCheckBoxMenuItem("Show Form");
-		showMenu.add(showFormCheckBox);
-		showFormCheckBox.setSelected(true);
-		windowMenu.add(showMenu);
-
-		fileMenu.setMnemonic(KeyEvent.VK_F);
-		windowMenu.setMnemonic(KeyEvent.VK_W);
-		exitItem.setMnemonic(KeyEvent.VK_X);
-		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-		menu.add(fileMenu);
-		menu.add(windowMenu);
-
 		newItem.addActionListener(event -> {
 			System.out.println(newItem.getText());
 		});
-
+		
+		prefsItem.addActionListener(event -> {
+			prefsDialog.setVisible(true);
+		});
+		
 		exportDataItem.addActionListener(event -> {
 			int openDialog = fileChooser.showOpenDialog(this);
 			if (openDialog == JFileChooser.APPROVE_OPTION) {
@@ -157,6 +151,50 @@ public class MainFrame extends JFrame {
 			JCheckBoxMenuItem form = (JCheckBoxMenuItem) event.getSource();
 			formPanel.setVisible(form.isSelected());
 		});
+		
+		prefsDialog.setPreferences((username, password, port) -> {
+			preferences.put("username", username);
+			preferences.put("password", password);
+			preferences.putInt("port", port);
+		});
+		
+	}
+
+	private void setProperties() {
+		setLayout(new BorderLayout());
+		add(tablePanel, BorderLayout.CENTER);
+		add(formPanel, BorderLayout.WEST);
+
+		setJMenuBar(createMenu());
+		setMinimumSize(new Dimension(Const.WIDTH, Const.HEIGHT));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	private JMenuBar createMenu() {
+
+		fileMenu.add(newItem);
+		fileMenu.addSeparator();
+		fileMenu.add(exportDataItem);
+		fileMenu.add(importDataItem);
+		fileMenu.addSeparator();
+		fileMenu.add(exitItem);
+		windowMenu.add(newWindowItem);
+		showMenu.add(showFormCheckBox);
+		windowMenu.add(showMenu);
+		windowMenu.add(prefsItem);
+		showFormCheckBox.setSelected(true);
+
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		windowMenu.setMnemonic(KeyEvent.VK_W);
+		exitItem.setMnemonic(KeyEvent.VK_X);
+		importDataItem.setMnemonic(KeyEvent.VK_I);
+		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		importDataItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+		menu.add(fileMenu);
+		menu.add(windowMenu);
 
 		return menu;
 	}
