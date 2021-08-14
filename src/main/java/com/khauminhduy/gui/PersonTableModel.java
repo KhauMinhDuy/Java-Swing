@@ -12,7 +12,7 @@ public class PersonTableModel extends AbstractTableModel {
 
 	private List<Person> db;
 
-	private String[] colName = { "ID", "Name", "Occupation", "Age", "Employee", "Citizen", "Gender" };
+	private String[] colName = { "ID", "Name", "Occupation", "Age", "Employee", "Citizen", "Tax Id", "Gender" };
 
 	public void setData(List<Person> db) {
 		this.db = db;
@@ -50,6 +50,8 @@ public class PersonTableModel extends AbstractTableModel {
 		case 5:
 			return person.isUsCitizen();
 		case 6:
+			return person.getTaxId();
+		case 7:
 			return person.getGender();
 		}
 		return null;

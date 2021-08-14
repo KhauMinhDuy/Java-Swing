@@ -6,7 +6,6 @@ public class Person implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static int count = 0;
 	private int id;
 	private String name;
 	private String occupation;
@@ -21,7 +20,6 @@ public class Person implements Serializable{
 
 	public Person(String name, String occupation, AgeCategory ageCategory, Employment employee, String taxId,
 			boolean usCitizen, Gender gender) {
-		this.id = count++;
 		this.name = name;
 		this.occupation = occupation;
 		this.ageCategory = ageCategory;

@@ -1,23 +1,23 @@
 package com.khauminhduy.gui;
 
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
-import com.khauminhduy.event.StringListener;
-
-public class ToolBar extends JPanel implements ActionListener{
+public class ToolBar extends JToolBar{
 	
+	private static final String VIEW_OFF_ICON = "src\\main\\resources\\7830774_view_off_icon.png";
+
+	private static final String COG_ICON = "src\\main\\resources\\7830762_cog_icon.png";
+
 	private static final long serialVersionUID = 1L;
 
 	private JButton helloBtn;
 	private JButton goodbyeBtn;
 	
-	private StringListener stringListener;
 	
 	public ToolBar() {
 		setControl();
@@ -25,39 +25,36 @@ public class ToolBar extends JPanel implements ActionListener{
 		setProperties();
 	}
 
-	private void setProperties() {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
-		setBorder(BorderFactory.createEtchedBorder());
-		add(helloBtn);
-		add(goodbyeBtn);
+	private void setControl() {
+		helloBtn = new JButton("", createIcon(COG_ICON));
+		goodbyeBtn = new JButton("", createIcon(VIEW_OFF_ICON));
 	}
 
 	private void setEvent() {
-		helloBtn.addActionListener(this);
-		goodbyeBtn.addActionListener(this);
+		helloBtn.addActionListener(event -> {
+			System.out.println("Hello");
+		});
+		goodbyeBtn.addActionListener(event -> {
+			System.out.println("Goodbye");
+		});
 	}
 
-	private void setControl() {
-		helloBtn = new JButton("Hello");
-		goodbyeBtn = new JButton("Goodbye");
-	}
-	
-	public void setStringListener(StringListener stringListener) {
-		this.stringListener = stringListener;
+	private void setProperties() {
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		setBorder(BorderFactory.createEtchedBorder());
+		
+		setFloatable(false);
+		
+		helloBtn.setToolTipText("Setting");
+		goodbyeBtn.setToolTipText("Hide");
+		
+		add(helloBtn);
+		addSeparator();
+		add(goodbyeBtn);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JButton button =  (JButton) e.getSource();
-		if(button == helloBtn) {
-			if(stringListener != null) {
-				stringListener.textEmitted("Hello\n");
-			}
-		} else if(button == goodbyeBtn) {
-			if(stringListener != null) {
-				stringListener.textEmitted("Goodbye\n");
-			}
-		}
+	private ImageIcon createIcon(String path) {
+		return new ImageIcon(path);
 	}
 
 }

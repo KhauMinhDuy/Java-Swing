@@ -20,6 +20,7 @@ public class TablePanel extends JPanel {
 
 	private JTable table;
 	private PersonTableModel tableModel;
+	
 	private JPopupMenu popup;
 	private JMenuItem removeItem;
 	private JMenuItem editItem;
@@ -30,6 +31,18 @@ public class TablePanel extends JPanel {
 		setControl();
 		setEvent();
 		setProperties();
+	}
+
+	public void setData(List<Person> db) {
+		tableModel.setData(db);
+	}
+
+	public void refresh() {
+		tableModel.fireTableDataChanged();
+	}
+
+	public void addPersonTableListener(PersonTableListener personTableListener) {
+		this.personTableListener = personTableListener;
 	}
 
 	private void setControl() {
@@ -61,10 +74,11 @@ public class TablePanel extends JPanel {
 		});
 		
 		removeItem.addActionListener(event -> {
-			int row = table.getSelectedRow();
+			int index = table.getSelectedRow();
+			
 			if(personTableListener != null) {
-				personTableListener.rowDelete(row);
-				tableModel.fireTableRowsDeleted(row, row);
+				personTableListener.rowDelete(index);
+				tableModel.fireTableRowsDeleted(index, index);
 			}
 		});
 		
@@ -73,18 +87,6 @@ public class TablePanel extends JPanel {
 	private void setProperties() {
 		setLayout(new BorderLayout());
 		add(new JScrollPane(table), BorderLayout.CENTER);
-	}
-	
-	public void setData(List<Person> db) {
-		tableModel.setData(db);
-	}
-
-	public void refresh() {
-		tableModel.fireTableDataChanged();
-	}
-
-	public void addPersonTableListener(PersonTableListener personTableListener) {
-		this.personTableListener = personTableListener;
 	}
 
 }

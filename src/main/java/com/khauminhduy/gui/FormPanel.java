@@ -58,6 +58,10 @@ public class FormPanel extends JPanel {
 		setProperties();
 	}
 
+	public void addFormEventOccured(FormListener formListener) {
+		this.formListener = formListener;
+	}
+
 	private void setControl() {
 		name = new JLabel("Name: ");
 		occupationLabel = new JLabel("Occupation: ");
@@ -122,11 +126,13 @@ public class FormPanel extends JPanel {
 			boolean selected = citizenCheck.isSelected();
 			String taxId = taxField.getText();
 			String gender = genderGroup.getSelection().getActionCommand();
-			FormEvent formEvent = new FormEvent(this, name, occupation, age, employee, taxId, selected, gender);
-			if (formListener != null) {
-				formListener.FormEventOccured(formEvent);
+			
+			if(!name.equals("") && !occupation.equals("")) {
+				FormEvent formEvent = new FormEvent(this, name, occupation, age, employee, taxId, selected, gender);
+				if (formListener != null) {
+					formListener.FormEventOccured(formEvent);
+				}
 			}
-
 		});
 
 		citizenCheck.addActionListener(event -> {
@@ -139,7 +145,7 @@ public class FormPanel extends JPanel {
 	private void setProperties() {
 		Dimension dimension = getPreferredSize();
 		dimension.width = 250;
-		setPreferredSize(dimension);
+		setMinimumSize(dimension);
 
 		Border innerBorder = BorderFactory.createTitledBorder("Add Person");
 		Border outnerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -284,10 +290,6 @@ public class FormPanel extends JPanel {
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
 		add(okBtn, gc);
-	}
-
-	public void addFormEventOccured(FormListener formListener) {
-		this.formListener = formListener;
 	}
 
 }
